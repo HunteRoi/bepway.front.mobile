@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/checkName"
+        android:checked="false"
+        android:checkable="true"
+        android:enabled="true"
+        android:title="Name"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/checkSector"
+        android:checked="false"
+        android:checkable="true"
+        android:enabled="true"
+        android:title="Sector"
+        app:showAsAction="never"/>
+</menu>
