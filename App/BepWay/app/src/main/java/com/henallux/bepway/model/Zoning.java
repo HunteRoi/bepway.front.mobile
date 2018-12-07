@@ -1,14 +1,16 @@
 package com.henallux.bepway.model;
 
+import java.util.ArrayList;
+
 public class Zoning {
     private String name;
-    private Coordinate[] roads;
+    private ArrayList<Coordinate> roads;
     private String city;
     private String commune;
     private String url;
     private int superficie;
 
-    public Zoning(String name, String city, String commune, String url, int superficie, Coordinate[] roads) {
+    public Zoning(String name, String city, String commune, String url, int superficie, ArrayList<Coordinate> roads) {
         setName(name);
         setCity(city);
         setCommune(commune);
@@ -25,11 +27,11 @@ public class Zoning {
         this.name = name;
     }
 
-    public Coordinate[] getRoads() {
+    public ArrayList<Coordinate> getRoads() {
         return roads;
     }
 
-    public void setRoads(Coordinate[] roads) {
+    public void setRoads(ArrayList<Coordinate> roads) {
         this.roads = roads;
     }
 

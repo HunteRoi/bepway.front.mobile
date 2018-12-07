@@ -18,16 +18,11 @@
 
         <activity
             android:name=".features.activities.CompaniesActivity"
-            android:parentActivityName=".features.activities.ZoningsActivity">
-        </activity>
+            android:parentActivityName=".features.activities.ZoningsActivity" />
         <activity
             android:name=".features.activities.MainActivity"
-            android:theme="@style/AppThemeDrawer">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/AppThemeDrawer" >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -40,8 +35,18 @@
 
         <activity android:name=".features.activities.MapActivity" />
         <activity android:name=".features.map.SurfaceMap" />
-        <activity android:name=".features.activities.ZoningsActivity"
-            android:parentActivityName=".features.activities.MainActivity"/>
+        <activity
+            android:name=".features.activities.ZoningsActivity"
+            android:parentActivityName=".features.activities.MainActivity" />
+        <activity android:name=".features.activities.LoginActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

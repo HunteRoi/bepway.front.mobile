@@ -31,12 +31,11 @@ public class ZoningDAO {
     public ArrayList<Zoning>jsonToZonings(String stringJSON) throws Exception{
         ArrayList<Zoning> zonings = new ArrayList<>();
         try {
-            Coordinate[] coordinates;
-            int iCoord = 0;
+            ArrayList<Coordinate> coordinates;
             JSONObject json = new JSONObject(stringJSON);
             JSONArray jsonRecords = new JSONArray(json.getString("records"));
             for (int i = 0; i < jsonRecords.length(); i++) {
-                coordinates = new Coordinate[500];
+                coordinates = new ArrayList<>();
                 JSONObject record = jsonRecords.getJSONObject(i);
                 JSONObject fields = record.getJSONObject("fields");
                 JSONObject geoShape = fields.getJSONObject("geo_shape");
@@ -49,8 +48,7 @@ public class ZoningDAO {
                             for (int c = 0; c < arrayZ.length(); c++) {
                                 JSONArray arrayC = arrayZ.getJSONArray(c);
                                 for (int x = 0; x < arrayC.length(); x++) {
-                                    coordinates[iCoord] = new Coordinate(Float.parseFloat(arrayC.getString(0)), Float.parseFloat(arrayC.getString(1)));
-                                    iCoord++;
+                                    coordinates.add(new Coordinate(Float.parseFloat(arrayC.getString(0)), Float.parseFloat(arrayC.getString(1))));
                                 }
                             }
                         }
@@ -60,8 +58,7 @@ public class ZoningDAO {
                     JSONArray uniqueArray = coordinatesJSON.getJSONArray(0);
                     for(int y = 0; y < uniqueArray.length(); y++){
                         JSONArray coordArray = uniqueArray.getJSONArray(y);
-                        coordinates[iCoord] = new Coordinate(Float.parseFloat(coordArray.getString(0)), Float.parseFloat(coordArray.getString(1)));
-                        iCoord++;
+                        coordinates.add(new Coordinate(Float.parseFloat(coordArray.getString(0)), Float.parseFloat(coordArray.getString(1))));
                     }
                 }
                 String nom = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc");
@@ -73,7 +70,6 @@ public class ZoningDAO {
                 int superficie = (int)(Math.round(Double.parseDouble(superfi)/100));
                 Zoning zoning = new Zoning(nom, city, commune, url, superficie, coordinates);
                 zonings.add(zoning);
-                iCoord = 0;
             }
         } catch (Exception ex) {Log.i("Errors", ex.getClass() +" - "+ ex.getMessage());}
 
