@@ -32,7 +32,6 @@ public class CompaniesActivity extends AppCompatActivity {
     private ArrayList<Company> allCompanies;
     private ArrayList<Company> searchedCompanies;
     private Dialog dialog;
-    private SearchView searchView;
     private MenuItem nameFilter;
     private MenuItem sectorFilter;
 
@@ -40,7 +39,9 @@ public class CompaniesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_companies);
-        searchView = findViewById(R.id.searchViewCompanies);
+
+        SearchView searchView = findViewById(R.id.searchViewCompanies);
+
         companiesToDisplay = findViewById(R.id.recyclerView);
         companiesToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), companiesToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
             @Override

@@ -33,14 +33,13 @@ public class ZoningsActivity extends AppCompatActivity {
     private ArrayList<Zoning> allZonings;
     private ArrayList<Zoning> searchedZonings;
     private Dialog dialog;
-    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_zonings);
 
-        searchView = (SearchView)findViewById(R.id.searchViewZonings);
+        SearchView searchView = findViewById(R.id.searchViewZonings);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -85,17 +84,17 @@ public class ZoningsActivity extends AppCompatActivity {
 
     public void showPopup(final Zoning zoning){
         dialog.setContentView(R.layout.zoning_popup);
-        TextView textClose = (TextView) dialog.findViewById(R.id.close_popup_zoning);
+        TextView textClose = dialog.findViewById(R.id.close_popup_zoning);
         TextView superficie = dialog.findViewById(R.id.superficieZoning);
         TextView nomZoning = dialog.findViewById(R.id.zoningTitle);
         TextView localite = dialog.findViewById(R.id.localiteZoning);
         TextView commune = dialog.findViewById(R.id.communeZoning);
-        ImageView companies = (ImageView)dialog.findViewById(R.id.listCompaniesPopup);
+        ImageView companies = dialog.findViewById(R.id.listCompaniesPopup);
         ImageView website = dialog.findViewById(R.id.webZoning);
 
         localite.setText(zoning.getCity());
         commune.setText(zoning.getCommune());
-        superficie.setText(zoning.getSuperficie()+" ares");
+        superficie.setText(zoning.getSuperficie()+" " + getString(R.string.size_unity));
         nomZoning.setText(zoning.getName());
         companies.setOnClickListener(new View.OnClickListener() {
             @Override

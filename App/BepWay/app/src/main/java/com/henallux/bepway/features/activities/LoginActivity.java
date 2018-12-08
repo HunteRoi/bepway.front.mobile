@@ -1,12 +1,9 @@
 package com.henallux.bepway.features.activities;
 
-import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-
 import com.henallux.bepway.R;
 import com.henallux.bepway.features.adapters.SectionsPageAdapter;
 import com.henallux.bepway.features.fragment.LogFragment;
@@ -34,8 +31,8 @@ public class LoginActivity extends FragmentActivity {
 
     private void setupViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new LogFragment(), "Login");
-        adapter.addFragment(new RegisterFragment(), "S'enregistrer");
+        adapter.addFragment(new LogFragment(), getString(R.string.title_tab_login));
+        adapter.addFragment(new RegisterFragment(), getString(R.string.title_tab_regiser));
         viewPager.setAdapter(adapter);
     }
 }

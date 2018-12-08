@@ -6,13 +6,13 @@
         android:checked="false"
         android:checkable="true"
         android:enabled="true"
-        android:title="Name"
+        android:title="@string/filter_name_option"
         app:showAsAction="never"/>
     <item
         android:id="@+id/checkSector"
         android:checked="false"
         android:checkable="true"
         android:enabled="true"
-        android:title="Sector"
+        android:title="@string/filter_sector_option"
         app:showAsAction="never"/>
 </menu>

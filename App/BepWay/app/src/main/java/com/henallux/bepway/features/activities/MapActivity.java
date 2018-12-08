@@ -29,8 +29,8 @@ public class MapActivity extends AppCompatActivity {
     private LoadZonings loadZoning;
     private ArrayList<Zoning>allZonings;
     private LocationManager manager;
-    private LocationListener listener;
     private SurfaceMap surfaceMap;
+    private LocationListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
