@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:actionOverflowButtonStyle">@style/filterIcon</item>
+        <!--<item name="android:actionOverflowButtonStyle">@style/filterIcon</item>-->
     </style>
 
     <style name="AppThemeDrawer" parent="Theme.AppCompat.NoActionBar">

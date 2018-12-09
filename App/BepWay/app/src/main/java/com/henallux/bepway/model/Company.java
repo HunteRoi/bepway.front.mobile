@@ -6,17 +6,20 @@ public class Company {
     private String ville;
     private String rueNumero;
     private String sector;
+    //private Zoning zoning
 
-    public Company(String name, String zoning, String ville, String rueNumero, String sector){
+    public Company(String name, String zoning, String ville, String rueNumero, String sector/*,Zoning zoning*/){
         setName(name);
         setRueNumero(rueNumero);
         setSector(sector);
         setVille(ville);
         setZoning(zoning);
+        //setZoning(zoning);
     }
 
     public String toString(){
         StringBuilder output = new StringBuilder();
+        //output.append("Zoning : " + zoning.toString());
         output.append("Zoning : " + getZoning());
         output.append("\nName : " + getName());
         output.append("\nSector : " + getSector());
@@ -69,4 +72,12 @@ public class Company {
     public void setSector(String sector) {
         this.sector = sector;
     }
+
+    /*public void setZoning(Zoning zoning){
+        this.zoning = zoning;
+    }*/
+
+    /*public Zoning getZoning(){
+        return this.zoning;
+    }*/
 }

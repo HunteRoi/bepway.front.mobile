@@ -21,9 +21,7 @@
             android:parentActivityName=".features.activities.ZoningsActivity" />
         <activity
             android:name=".features.activities.MainActivity"
-            android:theme="@style/AppThemeDrawer" >
-
-        </activity>
+            android:theme="@style/AppThemeDrawer"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -33,20 +31,18 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
 
-        <activity android:name=".features.activities.MapActivity" />
-        <activity android:name=".features.map.SurfaceMap" />
         <activity
             android:name=".features.activities.ZoningsActivity"
             android:parentActivityName=".features.activities.MainActivity" />
         <activity android:name=".features.activities.LoginActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".features.activities.MapActivity"
+            android:parentActivityName=".features.activities.MainActivity"/>
     </application>
 
 </manifest>

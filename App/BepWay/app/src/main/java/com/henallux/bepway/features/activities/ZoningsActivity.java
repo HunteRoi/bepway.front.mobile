@@ -12,6 +12,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -39,7 +40,39 @@ public class ZoningsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_zonings);
 
-        SearchView searchView = findViewById(R.id.searchViewZonings);
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.zoning_popup);
+
+        zoningsToDisplay = findViewById(R.id.recyclerView);
+        zoningsToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), zoningsToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showPopup(searchedZonings.get(position));
+            }
+        }));
+
+
+        allZonings = new ArrayList<>();
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+
+        zoningsToDisplay.addItemDecoration(decoration);
+        zoningsToDisplay.setLayoutManager(layoutManager);
+
+        loadZonings = new LoadZonings();
+        loadZonings.execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.getMenuInflater().inflate(R.menu.zoning_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        SearchView searchView = (SearchView)menu.findItem(R.id.researchZoning).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -57,33 +90,10 @@ public class ZoningsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-        zoningsToDisplay = findViewById(R.id.recyclerView);
-        zoningsToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), zoningsToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                showPopup(searchedZonings.get(position));
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-        dialog = new Dialog(this);
-        allZonings = new ArrayList<>();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
-        zoningsToDisplay.addItemDecoration(decoration);
-        zoningsToDisplay.setLayoutManager(layoutManager);
-        loadZonings = new LoadZonings();
-        loadZonings.execute();
+        return super.onPrepareOptionsMenu(menu);
     }
 
-
     public void showPopup(final Zoning zoning){
-        dialog.setContentView(R.layout.zoning_popup);
         TextView textClose = dialog.findViewById(R.id.close_popup_zoning);
         TextView superficie = dialog.findViewById(R.id.superficieZoning);
         TextView nomZoning = dialog.findViewById(R.id.zoningTitle);

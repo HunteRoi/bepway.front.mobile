@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class SurfaceMap extends View {
 
     private Paint paint = new Paint();
-    private ArrayList<PointF> points;
+    private ArrayList<PointF> points = new ArrayList<>();
 
     public SurfaceMap(Context context) {
         super(context);
@@ -38,19 +39,21 @@ public class SurfaceMap extends View {
         SurfaceMap.this.setBackgroundColor(Color.BLACK);
         paint.setColor(Color.GRAY);
         paint.setStrokeWidth(20);
+        Log.i("DRAWdezd", "array size : " + points.size());
         for(PointF point : points){
-            canvas.drawPoint(point.x, point.y, paint);
+            canvas.drawPoint(point.x,point.y,paint);
+            Log.i("DRAWdezd", "drawn point : " + point.x + " ; " + point.y);
         }
+        //canvas.drawPoint(50,50,paint);
         super.onDraw(canvas);
     }
 
-    public void draw(ArrayList<PointF> points){
-        this.points = points;
+    public void draw(){
         invalidate();
         requestLayout();
     }
 
-    public void addPoint(PointF point){
-        points.add(point);
+    public void setPoints(ArrayList<PointF> points){
+        this.points = (ArrayList<PointF>)points.clone();
     }
 }

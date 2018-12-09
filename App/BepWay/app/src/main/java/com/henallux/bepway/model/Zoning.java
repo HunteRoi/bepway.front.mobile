@@ -19,6 +19,10 @@ public class Zoning {
         setRoads(roads);
     }
 
+    public String toString(){
+        return name;
+    }
+
     public String getName() {
         return name;
     }

@@ -28,6 +28,7 @@ public class MapActivity extends AppCompatActivity {
 
     private LoadZonings loadZoning;
     private ArrayList<Zoning>allZonings;
+    private ArrayList<PointF> points;
     private LocationManager manager;
     private SurfaceMap surfaceMap;
     private LocationListener listener;
@@ -37,8 +38,7 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        surfaceMap = (SurfaceMap) findViewById(R.id.SurfaceMap);
-        //surfaceMap.draw();
+        surfaceMap = (SurfaceMap) findViewById(R.id.surfaceMap);
 
         allZonings = new ArrayList<>();
         loadZoning = new LoadZonings();
@@ -48,8 +48,8 @@ public class MapActivity extends AppCompatActivity {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) { ;
-                Log.i("lcoation",location.getLatitude()+ " - " + location.getLongitude());
-        }
+                //Log.i("lcoation",location.getLatitude()+ " - " + location.getLongitude());
+            }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -110,12 +110,12 @@ public class MapActivity extends AppCompatActivity {
             for(Zoning zoning : zonings){
                 allZonings.add(zoning);
             }
-            ArrayList<PointF> points = new ArrayList<>();
-            for(Coordinate coordinate: allZonings.get(0).getRoads()){
-                points.add(new PointF(coordinate.getX(), coordinate.getY()));
+            points = new ArrayList<>();
+            for(Coordinate coord : allZonings.get(0).getRoads()){
+                points.add(new PointF(coord.getX(), coord.getY()));
             }
-            surfaceMap.draw(points);
-            Log.i("map", allZonings.size()+"");
+            surfaceMap.setPoints(points);
+            surfaceMap.draw();
         }
 
         @Override

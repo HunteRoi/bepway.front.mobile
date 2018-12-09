@@ -48,7 +48,7 @@ public class ZoningDAO {
                             for (int c = 0; c < arrayZ.length(); c++) {
                                 JSONArray arrayC = arrayZ.getJSONArray(c);
                                 for (int x = 0; x < arrayC.length(); x++) {
-                                    coordinates.add(new Coordinate(Float.parseFloat(arrayC.getString(0)), Float.parseFloat(arrayC.getString(1))));
+                                    coordinates.add(new Coordinate(Float.parseFloat(arrayC.getString(1)), Float.parseFloat(arrayC.getString(0))));
                                 }
                             }
                         }
@@ -58,7 +58,7 @@ public class ZoningDAO {
                     JSONArray uniqueArray = coordinatesJSON.getJSONArray(0);
                     for(int y = 0; y < uniqueArray.length(); y++){
                         JSONArray coordArray = uniqueArray.getJSONArray(y);
-                        coordinates.add(new Coordinate(Float.parseFloat(coordArray.getString(0)), Float.parseFloat(coordArray.getString(1))));
+                        coordinates.add(new Coordinate(Float.parseFloat(coordArray.getString(1)), Float.parseFloat(coordArray.getString(0))));
                     }
                 }
                 String nom = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc");

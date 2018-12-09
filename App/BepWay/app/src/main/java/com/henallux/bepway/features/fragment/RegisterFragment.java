@@ -37,6 +37,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         Button createButton = view.findViewById(R.id.createAccountButton);
+        Button cancelButton = view.findViewById(R.id.cancelAccountButton);
         usernameInput = view.findViewById(R.id.usernameInput);
         passwordInput = view.findViewById(R.id.passwordInput);
         passwordCheckInput = view.findViewById(R.id.passwordCheckInput);
@@ -46,7 +47,24 @@ public class RegisterFragment extends Fragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // + creation et insertion BD
                 checkForm();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usernameInput.getText().clear();
+                usernameInput.setHint(R.string.username_hint);
+                passwordInput.getText().clear();
+                passwordInput.setHint(R.string.password_hint);
+                passwordCheckInput.getText().clear();
+                passwordCheckInput.setHint(R.string.check_password_hint);
+                emailInput.getText().clear();
+                emailInput.setHint(R.string.email_hint);
+                displayDate.setText("");
+                displayDate.setHint(R.string.birthdate_hint);
             }
         });
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    <!--<item
         android:id="@+id/checkName"
         android:checked="false"
         android:checkable="true"
@@ -14,5 +14,18 @@
         android:checkable="true"
         android:enabled="true"
         android:title="@string/filter_sector_option"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
+    <item
+        android:id="@+id/researchOption"
+        android:icon="@drawable/ic_search"
+        android:title=""
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"/>
+
+
+    <item
+        android:id="@+id/filterOption"
+        android:icon="@drawable/ic_filter"
+        android:title="Filter"
+        app:showAsAction="always"/>
 </menu>

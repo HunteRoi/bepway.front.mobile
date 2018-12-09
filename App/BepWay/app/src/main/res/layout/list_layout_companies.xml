@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <SearchView
+    <!--<SearchView
         android:id="@+id/searchViewCompanies"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -18,7 +18,7 @@
         android:layout_height="0dp"
         android:background="@color/common_google_signin_btn_text_dark_default"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchViewCompanies">
+        app:layout_constraintTop_toTopOf="parent">
 
     </android.support.v7.widget.RecyclerView>
 
