@@ -123,7 +123,7 @@ public class RegisterFragment extends Fragment {
             displayDate.requestFocus();
             displayDate.setError(getString(R.string.empty_field_error));
         }
-        if(formatDate(displayDate.getText().toString()).after(new Date())){
+        if(formatDate(displayDate.getText().toString()).after(Calendar.getInstance().getTime())){
             displayDate.requestFocus();
             displayDate.setError(getString(R.string.wrong_date_error));
         }
