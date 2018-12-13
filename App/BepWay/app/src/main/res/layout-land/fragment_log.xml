@@ -104,7 +104,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/BESTLOGOEVER"
+        android:src="@drawable/best_logo_ever"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
