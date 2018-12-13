@@ -9,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.features.activities.MainActivity;
-import com.henallux.bepway.features.activities.ZoningsActivity;
 
 public class LogFragment extends Fragment {
     public LogFragment(){
@@ -29,6 +29,7 @@ public class LogFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_log, container, false);
         Button logButton = view.findViewById(R.id.logButton);
+        final ImageView appIcon =  view.findViewById(R.id.appIcon);
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,6 +39,18 @@ public class LogFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        //region Surprise
+        appIcon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                appIcon.setImageResource(R.drawable.titi);
+                return false;
+            }
+        });
+        //endregion
+
         return view;
     }
+
 }

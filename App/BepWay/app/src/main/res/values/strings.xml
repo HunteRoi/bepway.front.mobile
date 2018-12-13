@@ -19,6 +19,7 @@
     <string name="size_unity">ares</string>
     <string name="empty_field_error">Ce champ doit être rempli</string>
     <string name="passwords_dont_match_error">Vos mots de passes sont différents</string>
+    <string name="wrong_date_error">Date ultérieure à la date actuelle</string>
     <string name="invalid_email_error">Adresse non valide</string>
     <string name="map_option">Afficher la carte</string>
     <string name="website_option">Site web</string>
@@ -28,7 +29,7 @@
     <string name="email_hint">Email</string>
     <string name="birthdate_hint">Date de naissance</string>
     <string name="register_button">S\'inscrire</string>
-    <string name="cancel_button">Annuler</string>
+    <string name="reset_button">Réinitialiser</string>
     <string name="connection_button">Se connecter</string>
     <string name="title_popup_zoning_superficie">Superficie</string>
     <string name="title_popup_zoning_implantations">Implantations</string>

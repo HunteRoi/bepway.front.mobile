@@ -37,7 +37,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         Button createButton = view.findViewById(R.id.createAccountButton);
-        Button cancelButton = view.findViewById(R.id.cancelAccountButton);
+        Button resetButton = view.findViewById(R.id.cancelAccountButton);
         usernameInput = view.findViewById(R.id.usernameInput);
         passwordInput = view.findViewById(R.id.passwordInput);
         passwordCheckInput = view.findViewById(R.id.passwordCheckInput);
@@ -52,19 +52,24 @@ public class RegisterFragment extends Fragment {
             }
         });
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 usernameInput.getText().clear();
                 usernameInput.setHint(R.string.username_hint);
+                usernameInput.setError(null);
                 passwordInput.getText().clear();
                 passwordInput.setHint(R.string.password_hint);
+                passwordInput.setError(null);
                 passwordCheckInput.getText().clear();
                 passwordCheckInput.setHint(R.string.check_password_hint);
+                passwordCheckInput.setError(null);
                 emailInput.getText().clear();
                 emailInput.setHint(R.string.email_hint);
+                emailInput.setError(null);
                 displayDate.setText("");
                 displayDate.setHint(R.string.birthdate_hint);
+                displayDate.setError(null);
             }
         });
 
@@ -89,18 +94,22 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String date = dayOfMonth+"/"+(month+1)+"/"+year;
-                SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
-                try{
-                  birthDate = formater.parse(date);
-                  displayDate.setText(formater.format(birthDate));
-                }
-                catch(Exception ex) {
-
-                }
+                birthDate = formatDate(date);
+                displayDate.setText(date);
             }
         };
 
         return view;
+    }
+
+    private Date formatDate(String stringDate){
+        SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        try {
+            date = formater.parse(stringDate);
+        }
+        catch (Exception ex){}
+        return date;
     }
 
     private void checkForm(){
@@ -110,5 +119,13 @@ public class RegisterFragment extends Fragment {
         if(!passwordInput.getText().toString().equals(passwordCheckInput.getText().toString())) passwordCheckInput.setError(getString(R.string.passwords_dont_match_error));
         if(emailInput.getText().toString().isEmpty()) emailInput.setError(getString(R.string.empty_field_error));
         else if(!Patterns.EMAIL_ADDRESS.matcher(emailInput.getText().toString()).matches()) emailInput.setError(getString(R.string.invalid_email_error));
+        if(displayDate.getText().toString().isEmpty()){
+            displayDate.requestFocus();
+            displayDate.setError(getString(R.string.empty_field_error));
+        }
+        if(formatDate(displayDate.getText().toString()).after(new Date())){
+            displayDate.requestFocus();
+            displayDate.setError(getString(R.string.wrong_date_error));
+        }
     }
 }
