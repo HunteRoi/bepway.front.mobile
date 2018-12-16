@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -36,6 +37,9 @@ public class CompaniesActivity extends AppCompatActivity {
     private Dialog dialogFilter;
     private CheckBox nameFilter;
     private CheckBox sectorFilter;
+    private CheckBox cityFilter;
+    private Button filterValidation;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +59,44 @@ public class CompaniesActivity extends AppCompatActivity {
 
         nameFilter = dialogFilter.findViewById(R.id.checkName);
         sectorFilter = dialogFilter.findViewById(R.id.checkSector);
+        cityFilter = dialogFilter.findViewById(R.id.checkCity);
+        filterValidation = dialogFilter.findViewById(R.id.filterButton);
 
         nameFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sectorFilter.isChecked() && nameFilter.isChecked())sectorFilter.setChecked(false);
+                if(nameFilter.isChecked()){
+                    if(sectorFilter.isChecked())sectorFilter.setChecked(false);
+                    if(cityFilter.isChecked())cityFilter.setChecked(false);
+                }
             }
         });
 
         sectorFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(nameFilter.isChecked() && sectorFilter.isChecked())nameFilter.setChecked(false);
+                if(sectorFilter.isChecked()){
+                    if(nameFilter.isChecked())nameFilter.setChecked(false);
+                    if(cityFilter.isChecked())cityFilter.setChecked(false);
+                }
+            }
+        });
+
+        cityFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cityFilter.isChecked()){
+                    if(nameFilter.isChecked())nameFilter.setChecked(false);
+                    if(sectorFilter.isChecked())sectorFilter.setChecked(false);
+                }
+            }
+        });
+
+        filterValidation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterCompanies(searchView.getQuery().toString());
+                dialogFilter.dismiss();
             }
         });
 
@@ -104,7 +134,7 @@ public class CompaniesActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        SearchView searchView = (SearchView)menu.findItem(R.id.researchOption).getActionView();
+        searchView = (SearchView)menu.findItem(R.id.researchOption).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -113,26 +143,35 @@ public class CompaniesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchedCompanies.clear();
-                for(Company company : allCompanies){
-                    if(nameFilter.isChecked()) {
-                        if(company.getName().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
-                    }
-                    else {
-                        if(sectorFilter.isChecked()){
-                            if(company.getSector().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
-                        }
-                        else{
-                            if(company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getName().toLowerCase().contains(newText.toLowerCase()))searchedCompanies.add(company);
-                        }
-                    }
-                }
-                adapter.setCompanies(searchedCompanies);
-                companiesToDisplay.setAdapter(adapter);
+                filterCompanies(newText);
                 return false;
             }
         });
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void filterCompanies(String newText){
+        searchedCompanies.clear();
+        for(Company company : allCompanies){
+            if(nameFilter.isChecked()) {
+                if(company.getName().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
+            }
+            else {
+                if(sectorFilter.isChecked()){
+                    if(company.getSector().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
+                }
+                else {
+                    if (cityFilter.isChecked()) {
+                        if(company.getCity() != null && company.getCity().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
+                    } else {
+                        if(company.getName().toLowerCase().contains(newText.toLowerCase()) || company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getCity().toLowerCase().contains(newText.toLowerCase()))
+                            searchedCompanies.add(company);
+                    }
+                }
+            }
+        }
+        adapter.setCompanies(searchedCompanies);
+        companiesToDisplay.setAdapter(adapter);
     }
 
     public void showFilterPopup(){
@@ -184,9 +223,7 @@ public class CompaniesActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
-            for(Company company : companies){
-                allCompanies.add(company);
-            }
+            allCompanies.addAll(companies);
             searchedCompanies = (ArrayList<Company>) allCompanies.clone();
             adapter = new AllCompaniesAdapter(allCompanies);
             companiesToDisplay.setAdapter(adapter);

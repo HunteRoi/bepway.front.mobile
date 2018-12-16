@@ -1,6 +1,9 @@
 package com.henallux.bepway.features.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +37,8 @@ public class LogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Mettre en place la connection
+                // si les logs sont bons ->
+                //SharedPreferences sharedPreferences = getActivity().getSharedPreferences()
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 getActivity().startActivity(intent);
                 getActivity().finish();

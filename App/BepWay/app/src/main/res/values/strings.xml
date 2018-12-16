@@ -10,6 +10,7 @@
     <string name="my_header_title">Menu</string>
     <string name="title_activity_maps">Map</string>
     <string name="settingsItem">Paramètres</string>
+    <string name="logOutItem">Se déconnecter</string>
     <string name="researchItem">Recherche</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -38,4 +39,7 @@
     <string name="listing_companies_option">Les entreprises</string>
     <string name="filter_name_option">Nom</string>
     <string name="filter_sector_option">Secteur</string>
+    <string name="filter_city_option">Ville</string>
+    <string name="filter_validation_button">Filtrer</string>
+    <string name="is_logged_sharedpref_key">isLogged</string>
 </resources>

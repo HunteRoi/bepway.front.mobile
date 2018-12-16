@@ -58,9 +58,12 @@ public class ZoningDAO {
                     JSONArray uniqueArray = coordinatesJSON.getJSONArray(0);
                     for(int y = 0; y < uniqueArray.length(); y++){
                         JSONArray coordArray = uniqueArray.getJSONArray(y);
-                        coordinates.add(new Coordinate(Float.parseFloat(coordArray.getString(1)), Float.parseFloat(coordArray.getString(0))));
+                        coordinates.add(new Coordinate(Double.parseDouble(coordArray.getString(1)), Double.parseDouble(coordArray.getString(0))));
                     }
                 }
+                Double centerX = Double.parseDouble(fields.getJSONArray("geo_point_2d").getString(0));
+                Double centerY = Double.parseDouble(fields.getJSONArray("geo_point_2d").getString(1));
+                Coordinate zoningCenter = new Coordinate(centerX, centerY);
                 String nom = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc");
                 String city = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_localisation");
                 String commune = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_commune");
@@ -68,7 +71,7 @@ public class ZoningDAO {
                 String supef = fields.getString("bep_services_dbo_gestparc_parcs_superficie");
                 String superfi = supef.split(",")[0]+"."+(supef.split(",")[1]).charAt(0);
                 int superficie = (int)(Math.round(Double.parseDouble(superfi)/100));
-                Zoning zoning = new Zoning(nom, city, commune, url, superficie, coordinates);
+                Zoning zoning = new Zoning(nom, city, commune, url, superficie, coordinates, zoningCenter);
                 zonings.add(zoning);
             }
         } catch (Exception ex) {Log.i("Errors", ex.getClass() +" - "+ ex.getMessage());}

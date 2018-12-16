@@ -1,5 +1,8 @@
 package com.henallux.bepway.features.activities;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -34,5 +37,11 @@ public class LoginActivity extends FragmentActivity {
         adapter.addFragment(new LogFragment(), getString(R.string.title_tab_login));
         adapter.addFragment(new RegisterFragment(), getString(R.string.title_tab_regiser));
         viewPager.setAdapter(adapter);
+    }
+
+    private void isAlreadyLogged(){
+        SharedPreferences sharedPreferences = ((Activity)this).getPreferences(Context.MODE_PRIVATE);
+        //Boolean
+        //Boolean isAlreadyAlogged = sharedPreferences.getBoolean(getString(R.string.is_logged_sharedpref_key),)
     }
 }

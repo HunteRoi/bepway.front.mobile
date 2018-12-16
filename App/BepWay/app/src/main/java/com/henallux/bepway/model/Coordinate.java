@@ -1,27 +1,27 @@
 package com.henallux.bepway.model;
 
 public class Coordinate {
-    private float x;
-    private float y;
+    private double x;
+    private double y;
 
-    public Coordinate(float x, float y) {
+    public Coordinate(double x, double y) {
        setX(x);
        setY(y);
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 }

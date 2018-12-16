@@ -2,6 +2,7 @@ package com.henallux.bepway.features.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
@@ -14,6 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.ZoningDAO;
@@ -40,6 +44,7 @@ public class MapActivity extends AppCompatActivity {
 
         surfaceMap = (SurfaceMap) findViewById(R.id.surfaceMap);
 
+
         allZonings = new ArrayList<>();
         loadZoning = new LoadZonings();
         loadZoning.execute();
@@ -48,7 +53,7 @@ public class MapActivity extends AppCompatActivity {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) { ;
-                //Log.i("lcoation",location.getLatitude()+ " - " + location.getLongitude());
+                Log.i("lcoation",location.getLatitude()+ " - " + location.getLongitude());
             }
 
             @Override
@@ -110,11 +115,12 @@ public class MapActivity extends AppCompatActivity {
             for(Zoning zoning : zonings){
                 allZonings.add(zoning);
             }
-            points = new ArrayList<>();
+            /*points = new ArrayList<>();
             for(Coordinate coord : allZonings.get(0).getRoads()){
-                points.add(new PointF(coord.getX(), coord.getY()));
-            }
-            surfaceMap.setPoints(points);
+                Log.i("DRAWdezd", coord.getX() + " - " + coord.getY());
+                //points.add(new PointF(coord.getX(), coord.getY()));
+            }*/
+            surfaceMap.setPoints(allZonings.get(0).getRoads(), allZonings.get(0).getZoningCenter());
             surfaceMap.draw();
         }
 

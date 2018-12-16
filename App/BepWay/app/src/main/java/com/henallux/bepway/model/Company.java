@@ -3,16 +3,16 @@ package com.henallux.bepway.model;
 public class Company {
     private String name;
     private String zoning;
-    private String ville;
+    private String city;
     private String rueNumero;
     private String sector;
     //private Zoning zoning
 
-    public Company(String name, String zoning, String ville, String rueNumero, String sector/*,Zoning zoning*/){
+    public Company(String name, String zoning, String city, String rueNumero, String sector/*,Zoning zoning*/){
         setName(name);
         setRueNumero(rueNumero);
         setSector(sector);
-        setVille(ville);
+        setCity(city);
         setZoning(zoning);
         //setZoning(zoning);
     }
@@ -23,15 +23,14 @@ public class Company {
         output.append("Zoning : " + getZoning());
         output.append("\nName : " + getName());
         output.append("\nSector : " + getSector());
-        output.append((getRueNumero() == null)? "\nadresse non connue, " : "\nAddress : "+getRueNumero()+", ");
-        output.append((getVille() == null)? " ville non connue" : getVille());
+        output.append("\n"+getAddress());
         return output.toString();
     }
 
     public String getAddress(){
         StringBuilder output = new StringBuilder();
         output.append((getRueNumero() == null)? "adresse non connue, " : getRueNumero()+", ");
-        output.append((getVille() == null)? " ville non connue" : getVille());
+        output.append((getCity() == null)? " ville non connue" : getCity());
         return output.toString();
     }
 
@@ -51,11 +50,11 @@ public class Company {
         this.zoning = zoning;
     }
 
-    public String getVille() {
-        return ville;
+    public String getCity() {
+        return city;
     }
 
-    public void setVille(String ville) { this.ville = ville; }
+    public void setCity(String city) { this.city = city; }
 
     public String getRueNumero() {
         return rueNumero;

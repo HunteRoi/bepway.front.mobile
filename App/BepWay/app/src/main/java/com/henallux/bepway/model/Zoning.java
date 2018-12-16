@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class Zoning {
     private String name;
     private ArrayList<Coordinate> roads;
+    private Coordinate zoningCenter;
     private String city;
     private String commune;
     private String url;
     private int superficie;
 
-    public Zoning(String name, String city, String commune, String url, int superficie, ArrayList<Coordinate> roads) {
+    public Zoning(String name, String city, String commune, String url, int superficie, ArrayList<Coordinate> roads, Coordinate zoningCenter) {
         setName(name);
         setCity(city);
         setCommune(commune);
@@ -18,6 +19,10 @@ public class Zoning {
         setSuperficie(superficie);
         setRoads(roads);
     }
+
+    public Coordinate getZoningCenter(){return zoningCenter;}
+
+    public void setZoningCenter(Coordinate zoningCenter){this.zoningCenter = zoningCenter;}
 
     public String toString(){
         return name;
