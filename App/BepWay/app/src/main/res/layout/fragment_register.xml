@@ -167,16 +167,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/registerBirthdate" />
 
-        <TextView
+        <EditText
             android:id="@+id/registerBirthdate"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:gravity="center"
             android:layout_marginEnd="8dp"
             android:ems="10"
             android:hint="@string/birthdate_hint"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:inputType="date"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent" />
 

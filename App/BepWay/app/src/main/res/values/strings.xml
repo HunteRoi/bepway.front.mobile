@@ -22,13 +22,14 @@
     <string name="passwords_dont_match_error">Vos mots de passes sont différents</string>
     <string name="wrong_date_error">Date ultérieure à la date actuelle</string>
     <string name="invalid_email_error">Adresse non valide</string>
+    <string name="wrong_date_format_error">Veuillez respecter le format demandé</string>
     <string name="map_option">Afficher la carte</string>
     <string name="website_option">Site web</string>
     <string name="username_hint">Nom de compte</string>
     <string name="password_hint">Mot de passe</string>
     <string name="check_password_hint">Check mot de passe</string>
     <string name="email_hint">Email</string>
-    <string name="birthdate_hint">Date de naissance</string>
+    <string name="birthdate_hint">JJ/MM/AAAA</string>
     <string name="register_button">S\'inscrire</string>
     <string name="reset_button">Réinitialiser</string>
     <string name="connection_button">Se connecter</string>
