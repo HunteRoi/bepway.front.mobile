@@ -8,4 +8,6 @@
     <color name="colorBackgroundCompany">#ADADAD</color>
     <color name="black">#000000</color>
     <color name="orange">#ffa500</color>
+    <color name="bep_blue">#004998</color>
+    <color name="bep_green">#7CB00E</color>
 </resources>
