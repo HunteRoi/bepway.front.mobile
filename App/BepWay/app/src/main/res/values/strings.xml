@@ -30,6 +30,9 @@
     <string name="check_password_hint">Check mot de passe</string>
     <string name="email_hint">Email</string>
     <string name="birthdate_hint">JJ/MM/AAAA</string>
+    <string name="birthdate_day_hint">JJ</string>
+    <string name="birthdate_month_hint">MM</string>
+    <string name="birthdate_year_hint">AAAA</string>
     <string name="register_button">S\'inscrire</string>
     <string name="reset_button">Réinitialiser</string>
     <string name="connection_button">Se connecter</string>
@@ -43,4 +46,6 @@
     <string name="filter_city_option">Ville</string>
     <string name="filter_validation_button">Filtrer</string>
     <string name="is_logged_sharedpref_key">isLogged</string>
+    <string name="error_token_unauthorized">Nom de compte / mot de passe erroné</string>
+    <string name="error_token_bad_request">Informations manquantes</string>
 </resources>

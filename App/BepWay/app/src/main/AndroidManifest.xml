@@ -21,7 +21,7 @@
             android:parentActivityName=".features.activities.ZoningsActivity" />
         <activity
             android:name=".features.activities.MainActivity"
-            android:theme="@style/AppThemeDrawer"/>
+            android:theme="@style/AppThemeDrawer" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -35,14 +35,19 @@
             android:name=".features.activities.ZoningsActivity"
             android:parentActivityName=".features.activities.MainActivity" />
         <activity android:name=".features.activities.LoginActivity">
+
+        </activity>
+        <activity
+            android:name=".features.activities.MapActivity"
+            android:parentActivityName=".features.activities.MainActivity" />
+        <activity android:name=".features.activities.SplashActivity"
+            android:theme="@style/splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".features.activities.MapActivity"
-            android:parentActivityName=".features.activities.MainActivity"/>
     </application>
 
 </manifest>

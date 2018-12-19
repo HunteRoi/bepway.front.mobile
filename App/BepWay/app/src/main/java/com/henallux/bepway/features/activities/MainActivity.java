@@ -2,6 +2,7 @@ package com.henallux.bepway.features.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,8 +41,18 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intentList);
                                 break;
                             case R.id.nav_map :
-                                Intent intent = new Intent(MainActivity.this, MapActivity.class);
-                                startActivity(intent);
+                                Intent intentMap = new Intent(MainActivity.this, MapActivity.class);
+                                startActivity(intentMap);
+                                break;
+                            case R.id.nav_disconnect:
+                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext().getApplicationContext())
+                                .edit()
+                                .remove("Token")
+                                .remove("Login")
+                                .remove("Password")
+                                .apply();
+                                Intent intentDisconnect = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intentDisconnect);
                                 break;
                             default : break;
                         }
