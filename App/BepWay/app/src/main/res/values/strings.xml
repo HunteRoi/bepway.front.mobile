@@ -17,6 +17,7 @@
     <string name="title_activity_test_login">TestLoginActivity</string>
     <string name="title_tab_login">Se connecter</string>
     <string name="title_tab_regiser">S\'enregistrer</string>
+    <string name="title_tab_guest">Invité</string>
     <string name="size_unity">ares</string>
     <string name="empty_field_error">Ce champ doit être rempli</string>
     <string name="passwords_dont_match_error">Vos mots de passes sont différents</string>
@@ -48,4 +49,6 @@
     <string name="is_logged_sharedpref_key">isLogged</string>
     <string name="error_token_unauthorized">Nom de compte / mot de passe erroné</string>
     <string name="error_token_bad_request">Informations manquantes</string>
+    <string name="guest_message">Bienvenue sur notre application, si vous n\'avez pas de compte, vous pouvez continuer en tant qu\'invité, sinon vous pouvez vous connecter sur l\'onglet suivant</string>
+    <string name="guest_login">Continuer en tant qu\'invité</string>
 </resources>

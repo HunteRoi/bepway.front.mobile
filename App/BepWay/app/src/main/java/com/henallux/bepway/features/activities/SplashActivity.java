@@ -2,6 +2,7 @@ package com.henallux.bepway.features.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,12 +11,15 @@ import android.widget.Toast;
 import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.TokenDAO;
+import com.henallux.bepway.features.fragment.GuestFragment;
 import com.henallux.bepway.model.LoginModel;
 import com.henallux.bepway.model.Token;
 
 public class SplashActivity extends AppCompatActivity {
 
     private GetToken getToken;
+    private String login;
+    private String password;
 
 
     @Override
@@ -23,17 +27,31 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        String login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+        login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .getString("Login",null);
 
-        String password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+        password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                             .getString("Password",null);
 
-        if(login != null && password != null){
-            LoginModel loginModel = new LoginModel(login, password);
-            getToken = new GetToken();
-            getToken.execute(loginModel);
-        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if(login != null && password != null){
+                    LoginModel loginModel = new LoginModel(login, password);
+                    getToken = new GetToken();
+                    getToken.execute(loginModel);
+                }
+                else{
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+        }, 3000);
+
+
     }
 
     public class GetToken extends AsyncTask<LoginModel, Void, Token> {
@@ -47,10 +65,10 @@ public class SplashActivity extends AppCompatActivity {
             try {
                 token = tokenDAO.getToken(params[0]);
             } catch (TokenException e) {
-                //token.setException(e.getErrorMessage());
+                token.setException(e.getErrorMessage());
             }
             catch (Exception ex){
-                //token.setException(ex.getMessage());
+                token.setException(ex.getMessage());
             }
             return token;
         }
@@ -58,18 +76,17 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Token token) {
             if(token.getToken() != null){
-                /*PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .edit()
                         .putString("Token",token.getToken())
-                        .putString("Login",loginModel.getLogin())
-                        .putString("Password",loginModel.getPassword())
                         .apply();
-
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                getActivity().startActivity(intent);*/
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
             }
-            //if(token.getException() != null)
-                //Toast.makeText(getActivity(), token.getException(), Toast.LENGTH_SHORT).show();
+            if(token.getException() != null){
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
         }
 
         @Override

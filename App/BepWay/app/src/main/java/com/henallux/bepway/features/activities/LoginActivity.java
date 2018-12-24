@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.TokenDAO;
 import com.henallux.bepway.features.adapters.SectionsPageAdapter;
+import com.henallux.bepway.features.fragment.GuestFragment;
 import com.henallux.bepway.features.fragment.LogFragment;
 import com.henallux.bepway.features.fragment.RegisterFragment;
 import com.henallux.bepway.model.Token;
@@ -46,14 +47,9 @@ public class LoginActivity extends FragmentActivity {
 
     private void setupViewPager(ViewPager viewPager){
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new GuestFragment(), getString(R.string.title_tab_guest));
         adapter.addFragment(new LogFragment(), getString(R.string.title_tab_login));
-        adapter.addFragment(new RegisterFragment(), getString(R.string.title_tab_regiser));
         viewPager.setAdapter(adapter);
     }
 
-    private void isAlreadyLogged(){
-        SharedPreferences sharedPreferences = ((Activity)this).getPreferences(Context.MODE_PRIVATE);
-        //Boolean
-        //Boolean isAlreadyAlogged = sharedPreferences.getBoolean(getString(R.string.is_logged_sharedpref_key),)
-    }
 }

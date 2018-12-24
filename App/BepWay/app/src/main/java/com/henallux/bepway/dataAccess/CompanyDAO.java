@@ -51,7 +51,7 @@ public class CompanyDAO {
             catch (JSONException exception){
                 adresseRueNumero = null;
             }
-            secteurActivites = jsonCompany.getString("new_secteur_d_activites");
+            secteurActivites = jsonCompany.getString("secteuractivite");
 
             Company company = new Company(nomEntreprise,nomParc,adresseVille,adresseRueNumero, secteurActivites);
             companies.add(company);

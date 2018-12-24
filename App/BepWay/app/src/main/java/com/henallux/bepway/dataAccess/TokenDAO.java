@@ -39,8 +39,11 @@ public class TokenDAO {
 
 
 
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) throw new TokenException("Informations manquantes");
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("Login ou mot de passe incorrect");
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST){
+            String test = connection.getResponseMessage();
+            throw new TokenException("Informations manquantes ou incorrectes");
+        }
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) throw new TokenException("Utilisateur introuvable");
 
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();

@@ -6,6 +6,7 @@
         android:id="@+id/researchZoning"
         android:icon="@drawable/ic_search"
         app:showAsAction="always"
+        android:iconTint="@color/white"
         android:title=""
         app:actionViewClass="android.widget.SearchView"/>
 
