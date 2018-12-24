@@ -101,7 +101,7 @@ public class CompaniesActivity extends AppCompatActivity {
         });
 
         dialogCompanyInfo = new Dialog(this);
-        dialogCompanyInfo.setContentView(R.layout.company_popup);
+        dialogCompanyInfo.setContentView(R.layout.premium_company_popup);
 
         allCompanies = new ArrayList<>();
 
