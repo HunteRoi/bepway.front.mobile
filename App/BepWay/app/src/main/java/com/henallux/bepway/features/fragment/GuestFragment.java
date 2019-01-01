@@ -23,7 +23,7 @@ import com.henallux.bepway.model.Token;
 public class GuestFragment extends Fragment {
 
     private final String LOGIN_GUEST = "guest";
-    private final String PASSWORD_GUEST = "mdptest";
+    private final String PASSWORD_GUEST = "guest";
     private final LoginModel GUEST_ACCOUNT = new LoginModel(LOGIN_GUEST, PASSWORD_GUEST);
 
 

@@ -6,15 +6,17 @@ public class Company {
     private String city;
     private String rueNumero;
     private String sector;
+    private Coordinate location;
     //private Zoning zoning
 
-    public Company(String name, String zoning, String city, String rueNumero, String sector/*,Zoning zoning*/){
+    public Company(String name, String zoning, String city, String rueNumero, String sector /*Coordinate location,Zoning zoning*/){
         setName(name);
         setRueNumero(rueNumero);
         setSector(sector);
         setCity(city);
         setZoning(zoning);
         //setZoning(zoning);
+        //setLocation(location);
     }
 
     public String toString(){
@@ -79,4 +81,12 @@ public class Company {
     /*public Zoning getZoning(){
         return this.zoning;
     }*/
+
+    public Coordinate getLocation() {
+        return location;
+    }
+
+    public void setLocation(Coordinate location) {
+        this.location = location;
+    }
 }

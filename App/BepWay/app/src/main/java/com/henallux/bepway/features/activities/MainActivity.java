@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intentList);
                                 break;
                             case R.id.nav_map :
-                                Intent intentMap = new Intent(MainActivity.this, MapActivity.class);
+                                Intent intentMap = new Intent(MainActivity.this, OSMActivity.class);
                                 startActivity(intentMap);
                                 break;
                             case R.id.nav_disconnect:

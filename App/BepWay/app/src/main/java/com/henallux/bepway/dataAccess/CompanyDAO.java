@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CompanyDAO {
     public ArrayList<Company> getAllCompanies() throws Exception{
-        URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=societes-de-nos-parcs-dactivite&facet=secteuractivite&facet=nomparc&facet=adresseville&facet=adressearrondissement&facet=new_secteur_d_activites");
+        URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=societes-de-nos-parcs-dactivite&facet=secteuractivite&facet=nomparc&facet=adresseville&facet=adressearrondissement&facet=new_secteur_d_activites&refine.nomparc=Parc+d%27activit%C3%A9+%C3%A9conomique+de+Ciney");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();

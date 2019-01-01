@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,6 +28,9 @@ import com.henallux.bepway.dataAccess.TokenDAO;
 import com.henallux.bepway.features.activities.MainActivity;
 import com.henallux.bepway.model.LoginModel;
 import com.henallux.bepway.model.Token;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
+import static android.content.Context.WIFI_SERVICE;
 
 public class LogFragment extends Fragment {
 
@@ -53,9 +59,18 @@ public class LogFragment extends Fragment {
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getToken = new GetToken();
-                loginModel = new LoginModel(username.getText().toString(), password.getText().toString());
-                getToken.execute(loginModel);
+                ConnectivityManager conMan = ((ConnectivityManager)getActivity().getApplicationContext().getSystemService(CONNECTIVITY_SERVICE));
+                boolean isWifiEnabled = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isAvailable();
+                boolean is3GEnabled = !(conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
+                        && conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getReason().equals("dataDisabled"));
+                if(isWifiEnabled || is3GEnabled){
+                    getToken = new GetToken();
+                    loginModel = new LoginModel(username.getText().toString(), password.getText().toString());
+                    getToken.execute(loginModel);
+                }
+                else{
+                    Toast.makeText(getActivity(), getString(R.string.no_connection_error), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
