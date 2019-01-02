@@ -1,6 +1,9 @@
 package com.henallux.bepway.features.activities;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 
@@ -25,9 +28,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
-
+import org.osmdroid.views.overlay.Polyline;
 import java.util.ArrayList;
 
 public class OSMActivity extends AppCompatActivity {
@@ -38,7 +40,16 @@ public class OSMActivity extends AppCompatActivity {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_osm);
+
+        /*org.osmdroid.config.IConfigurationProvider osmConf = org.osmdroid.config.Configuration.getInstance();
+        File basePath = new File(getCacheDir().getAbsolutePath(), "osmdroid");
+        osmConf.setOsmdroidBasePath(basePath);
+        File tileCache = new File(osmConf.getOsmdroidBasePath().getAbsolutePath(), "tile");
+        osmConf.setOsmdroidTileCache(tileCache);*/
 
         //handle permissions first, before map is created. not depicted here
 
@@ -60,7 +71,7 @@ public class OSMActivity extends AppCompatActivity {
 
         IMapController mapController = map.getController();
         mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(50.309, 5.108);
+        GeoPoint startPoint = new GeoPoint(50.306, 5.106);
         mapController.setCenter(startPoint);
 
         ArrayList<OverlayItem> items = new ArrayList<>();
@@ -79,10 +90,20 @@ public class OSMActivity extends AppCompatActivity {
         mOverlay.setFocusItemsOnTap(true);
         //map.getOverlayManager().add(mOverlay);
 
-        Marker marker = new Marker(map);
+        /*Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(50.309,5.108));
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlayManager().add(marker);
+        map.getOverlayManager().add(marker);*/
+
+        RoadManager roadManager = new OSRMRoadManager(this);
+        ArrayList<GeoPoint> waypoints = new ArrayList<>();
+        waypoints.add(startPoint);
+        GeoPoint endPoint = new GeoPoint(50.308, 5.108);
+        waypoints.add(endPoint);
+        Road road = roadManager.getRoad(waypoints);
+        Polyline roadOverlay = roadManager.buildRoadOverlay(road);
+        //map.getOverlays().add(roadOverlay);
+        //map.invalidate();
 
         manager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         listener = new LocationListener() {

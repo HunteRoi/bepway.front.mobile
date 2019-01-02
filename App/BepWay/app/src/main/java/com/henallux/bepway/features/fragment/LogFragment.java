@@ -60,17 +60,17 @@ public class LogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ConnectivityManager conMan = ((ConnectivityManager)getActivity().getApplicationContext().getSystemService(CONNECTIVITY_SERVICE));
-                boolean isWifiEnabled = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isAvailable();
-                boolean is3GEnabled = !(conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
-                        && conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getReason().equals("dataDisabled"));
-                if(isWifiEnabled || is3GEnabled){
+                //boolean isWifiEnabled = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isAvailable();
+                //boolean is3GEnabled = !(conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
+                        //&& conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getReason().equals("dataDisabled"));
+                //if(isWifiEnabled || is3GEnabled){
                     getToken = new GetToken();
                     loginModel = new LoginModel(username.getText().toString(), password.getText().toString());
                     getToken.execute(loginModel);
-                }
-                else{
+                //}
+                //else{
                     Toast.makeText(getActivity(), getString(R.string.no_connection_error), Toast.LENGTH_SHORT).show();
-                }
+                //}
             }
         });
 
