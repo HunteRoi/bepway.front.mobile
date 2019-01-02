@@ -1,7 +1,12 @@
 package com.henallux.bepway.dataAccess;
 
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.henallux.bepway.model.Coordinate;
+import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,10 +18,15 @@ import java.util.ArrayList;
 
 public class ZoningDAO {
 
-    public ArrayList<Zoning> getAllZonings() throws Exception{
-        Log.i("Zoning", "getAllZonings");
-        URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=parcs-dactivite-economique&facet=bep_services_dbo_gestparc_pae_equipements_hallrelais&facet=bep_services_dbo_gestparc_pae_equipements_gaz&facet=bep_services_dbo_gestparc_pae_equipements_fibreoptique&facet=bep_services_dbo_gestparc_pae_equipements_adsl&facet=bep_services_dbo_gestparc_pae_equipements_coaxial&facet=bep_services_dbo_gestparc_pae_equipements_assainissementcollectif&facet=bep_services_dbo_gestparc_pae_caracteristiques_type&facet=bep_services_dbo_gestparc_pae_caracteristiques_localisation&facet=bep_services_dbo_gestparc_pae_caracteristiques_commune&facet=bep_services_dbo_gestparc_pae_caracteristiques_prixvente");
+    public ArrayList<Zoning> getAllZoningsAPI(String token) throws Exception{
+        //URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=parcs-dactivite-economique&facet=bep_services_dbo_gestparc_pae_equipements_hallrelais&facet=bep_services_dbo_gestparc_pae_equipements_gaz&facet=bep_services_dbo_gestparc_pae_equipements_fibreoptique&facet=bep_services_dbo_gestparc_pae_equipements_adsl&facet=bep_services_dbo_gestparc_pae_equipements_coaxial&facet=bep_services_dbo_gestparc_pae_equipements_assainissementcollectif&facet=bep_services_dbo_gestparc_pae_caracteristiques_type&facet=bep_services_dbo_gestparc_pae_caracteristiques_localisation&facet=bep_services_dbo_gestparc_pae_caracteristiques_commune&facet=bep_services_dbo_gestparc_pae_caracteristiques_prixvente");
+        URL url = new URL("https://bepway.azurewebsites.net/api/Zoning");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer "+token);
+
         BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();
         String stringJSON = "",line;
@@ -25,83 +35,31 @@ public class ZoningDAO {
         }
         buffer.close();
         stringJSON = stringBuilder.toString();
-        return jsonToZonings(stringJSON);
+        return jsonToAPIZonings(stringJSON);
     }
 
-    public ArrayList<Zoning>jsonToZonings(String stringJSON) throws Exception{
+    public ArrayList<Zoning> jsonToAPIZonings(String stringJSON) throws Exception{
         ArrayList<Zoning> zonings = new ArrayList<>();
         try {
-            ArrayList<Coordinate> coordinates;
-            JSONObject json = new JSONObject(stringJSON);
-            JSONArray jsonRecords = new JSONArray(json.getString("records"));
-            for (int i = 0; i < jsonRecords.length(); i++) {
-                coordinates = new ArrayList<>();
-                JSONObject record = jsonRecords.getJSONObject(i);
-                JSONObject fields = record.getJSONObject("fields");
-                JSONObject geoShape = fields.getJSONObject("geo_shape");
-                JSONArray coordinatesJSON = geoShape.getJSONArray("coordinates");
-                if(geoShape.getString("type").equals("MultiPolygon")){
-                    for (int y = 0; y < coordinatesJSON.length(); y++) {
-                        JSONArray arrayY = coordinatesJSON.getJSONArray(y);
-                        for (int z = 0; z < arrayY.length(); z++) {
-                            JSONArray arrayZ = arrayY.getJSONArray(z);
-                            for (int c = 0; c < arrayZ.length(); c++) {
-                                JSONArray arrayC = arrayZ.getJSONArray(c);
-                                for (int x = 0; x < arrayC.length(); x++) {
-                                    coordinates.add(new Coordinate(Float.parseFloat(arrayC.getString(1)), Float.parseFloat(arrayC.getString(0))));
-                                }
-                            }
-                        }
-                    }
-                }
-                else{
-                    JSONArray uniqueArray = coordinatesJSON.getJSONArray(0);
-                    for(int y = 0; y < uniqueArray.length(); y++){
-                        JSONArray coordArray = uniqueArray.getJSONArray(y);
-                        coordinates.add(new Coordinate(Double.parseDouble(coordArray.getString(1)), Double.parseDouble(coordArray.getString(0))));
-                    }
-                }
-                Double centerX = Double.parseDouble(fields.getJSONArray("geo_point_2d").getString(0));
-                Double centerY = Double.parseDouble(fields.getJSONArray("geo_point_2d").getString(1));
-                Coordinate zoningCenter = new Coordinate(centerX, centerY);
-                String nom = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc");
-                String city = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_localisation");
-                String commune = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_commune");
-                String url = fields.getString("bep_services_dbo_gestparc_pae_caracteristiques_url_pae");
-                String supef = fields.getString("bep_services_dbo_gestparc_parcs_superficie");
-                String superfi = supef.split(",")[0]+"."+(supef.split(",")[1]).charAt(0);
-                int superficie = (int)(Math.round(Double.parseDouble(superfi)/100));
-                Zoning zoning = new Zoning(nom, city, commune, url, superficie, coordinates, zoningCenter);
+            JSONArray records = new JSONArray(stringJSON);
+            for (int i = 0; i < records.length(); i++) {
+                Zoning zoning = new Zoning();
+                JSONObject zoningJson = records.getJSONObject(i);
+                JSONObject coordinates = zoningJson.getJSONObject("coordinates");
+                zoning.setId(zoningJson.getInt("id"));
+                zoning.setName(zoningJson.getString("name"));
+                zoning.setUrl(zoningJson.getString("url"));
+                zoning.setZoningCenter(new Coordinate(Double.parseDouble(coordinates.getString("latitude")),Double.parseDouble(coordinates.getString("longitude"))));
+                double superficie = zoningJson.getDouble("surface");
+                zoning.setSuperficie((int)(Math.round(superficie)));
+                zoning.setCommune(zoningJson.getString("township"));
+                zoning.setCity(zoningJson.getString("localisation"));
+                zoning.setNbImplantations(zoningJson.getInt("nbImplantations"));
                 zonings.add(zoning);
             }
         } catch (Exception ex) {Log.i("Errors", ex.getClass() +" - "+ ex.getMessage());}
-
-
-
-
-
-      /*  Log.i("Zoning", "Records");
-        for(int i = 0; i < jsonArray.length(); i++){
-            Log.i("Zoning", "Fields");
-            coordinates = new Coordinate[200];
-            JSONObject jsonCompany2 = jsonArray.getJSONObject(i);
-            JSONObject jsonZoning = new JSONObject(jsonCompany2.getString("fields"));
-            JSONObject geoShape = new JSONObject(jsonZoning.getString("geo_shape"));
-            JSONArray coordinatesArray = new JSONArray(geoShape.getString("coordinates"));
-            for(int z = 0; i < coordinatesArray.length(); z++){
-                JSONArray coordinatesOne = new JSONArray(coordinatesArray.getString(z));
-                Log.i("Zoning", coordinatesOne.toString());
-                JSONArray coordinatesOneOne = new JSONArray(coordinatesOne.getString(0));
-                Log.i("Zoning", "array length = " + coordinatesOneOne.length());
-                for(int y = 0; y < coordinatesOneOne.length(); y++){
-                    JSONArray coords = new JSONArray(coordinatesOneOne.getString(y));
-                    coordinates[y] = new Coordinate(Float.parseFloat(coords.getString(0)), Float.parseFloat(coords.getString(1)));
-                }
-                Log.i("Zoning", jsonZoning.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc"));
-                Zoning zoning = new Zoning(jsonZoning.getString("bep_services_dbo_gestparc_pae_caracteristiques_nomparc"),coordinates);
-                zonings.add(zoning);
-            }
-        }*/
         return zonings;
     }
+
+
 }

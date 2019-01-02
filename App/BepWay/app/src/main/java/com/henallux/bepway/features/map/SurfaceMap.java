@@ -51,7 +51,7 @@ public class SurfaceMap extends View {
         paint.setStrokeWidth(20);
         Log.i("DRAWdezd", "width : " + canvas.getWidth() + " - " + "Height : " + canvas.getHeight());
         for(Coordinate coord : convertedPoints){
-            canvas.drawPoint((float)coord.getX(),(float)coord.getY(),paint);
+            canvas.drawPoint((float)coord.getLatitude(),(float)coord.getLongitude(),paint);
         }
         //canvas.drawPoint(50,50,paint);
 
@@ -65,16 +65,16 @@ public class SurfaceMap extends View {
 
     private void convertCoordIntoXY(int width, int height){
         for(Coordinate coordinate : points){
-            double x = (coordinate.getX() + 180) * (width/360);
-            double latRad = coordinate.getY()*Math.PI/180;
+            double x = (coordinate.getLatitude() + 180) * (width/360);
+            double latRad = coordinate.getLongitude()*Math.PI/180;
             double mercN = Math.log(Math.tan(Math.PI)+(latRad/2));
             double y = (height/2)-(width*mercN/(2*Math.PI));
             convertedPoints.add(new Coordinate(x,y));
             Log.i("DRAWdezd", x + " - " + y);
         }
         if(center != null){
-            double x = (center.getX() + 180) * (width/360);
-            double latRad = center.getY()*Math.PI/180;
+            double x = (center.getLatitude() + 180) * (width/360);
+            double latRad = center.getLongitude()*Math.PI/180;
             double mercN = Math.log(Math.tan(Math.PI)+(latRad/2));
             double y = (height/2)-(width*mercN/(2*Math.PI));
             Log.i("DRAWdezd", "Center : " + x + " - " + y);

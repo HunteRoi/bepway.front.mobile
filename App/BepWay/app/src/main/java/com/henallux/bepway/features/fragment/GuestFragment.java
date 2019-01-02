@@ -3,6 +3,7 @@ package com.henallux.bepway.features.fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -79,6 +80,11 @@ public class GuestFragment extends Fragment {
             if(token.getException() != null)
                 Toast.makeText(getActivity(), token.getException(), Toast.LENGTH_SHORT).show();
             else{
+                PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                        .edit()
+                        .putString("Token",token.getToken())
+                        .putString("TokenExpirationDateInSec",Float.toString(token.getExpiresin()))
+                        .apply();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 getActivity().startActivity(intent);
             }

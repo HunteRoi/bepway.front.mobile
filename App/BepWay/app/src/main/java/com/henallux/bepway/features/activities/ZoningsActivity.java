@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,11 +23,13 @@ import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.ZoningDAO;
 import com.henallux.bepway.features.adapters.AllZoningsAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
+import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ZoningsActivity extends AppCompatActivity {
+public class ZoningsActivity extends AppCompatActivity implements Serializable {
 
     private RecyclerView zoningsToDisplay;
     private AllZoningsAdapter adapter;
@@ -96,15 +99,18 @@ public class ZoningsActivity extends AppCompatActivity {
     public void showPopup(final Zoning zoning){
         TextView textClose = dialog.findViewById(R.id.close_popup_zoning);
         TextView superficie = dialog.findViewById(R.id.superficieZoning);
+        TextView nbImplantations = dialog.findViewById(R.id.implentationsZoning);
         TextView nomZoning = dialog.findViewById(R.id.zoningTitle);
         TextView localite = dialog.findViewById(R.id.localiteZoning);
         TextView commune = dialog.findViewById(R.id.communeZoning);
         ImageView companies = dialog.findViewById(R.id.listCompaniesPopup);
         ImageView website = dialog.findViewById(R.id.webZoning);
+        ImageView map = dialog.findViewById(R.id.mapViewZoning);
 
         localite.setText(zoning.getCity());
         commune.setText(zoning.getCommune());
         superficie.setText(zoning.getSuperficie()+" " + getString(R.string.size_unity));
+        nbImplantations.setText(Integer.toString(zoning.getNbImplantations()));
         nomZoning.setText(zoning.getName());
         companies.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +126,15 @@ public class ZoningsActivity extends AppCompatActivity {
                 dialog.dismiss();
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(zoning.getUrl()));
+                startActivity(i);
+            }
+        });
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(ZoningsActivity.this, OSMActivity.class);
+                i.putExtra("center", zoning.getZoningCenter());
                 startActivity(i);
             }
         });
@@ -145,12 +160,13 @@ public class ZoningsActivity extends AppCompatActivity {
             ArrayList<Zoning> zonings = new ArrayList<>();
             ZoningDAO zoningDAO = new ZoningDAO();
             if(isCancelled()){
-                Log.i("Company","Is cancelled");
+                Log.i("Zoning","Is cancelled");
             }
             try {
-                zonings = zoningDAO.getAllZonings();
+                String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
+                zonings = zoningDAO.getAllZoningsAPI(token);
             } catch (Exception e) {
-                Log.i("Company", e.getMessage());
+                Log.i("Zoning", e.getMessage());
             }
             return zonings;
         }

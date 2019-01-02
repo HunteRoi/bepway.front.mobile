@@ -7,6 +7,7 @@ public class Company {
     private String rueNumero;
     private String sector;
     private Coordinate location;
+    private boolean isPremium;
     //private Zoning zoning
 
     public Company(String name, String zoning, String city, String rueNumero, String sector /*Coordinate location,Zoning zoning*/){
@@ -15,6 +16,7 @@ public class Company {
         setSector(sector);
         setCity(city);
         setZoning(zoning);
+        setPremium(false);
         //setZoning(zoning);
         //setLocation(location);
     }
@@ -72,6 +74,14 @@ public class Company {
 
     public void setSector(String sector) {
         this.sector = sector;
+    }
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
+    public void setPremium(boolean premium) {
+        isPremium = premium;
     }
 
     /*public void setZoning(Zoning zoning){

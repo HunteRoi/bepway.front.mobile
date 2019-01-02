@@ -1,27 +1,29 @@
 package com.henallux.bepway.model;
 
-public class Coordinate {
-    private double x;
-    private double y;
+import java.io.Serializable;
 
-    public Coordinate(double x, double y) {
-       setX(x);
-       setY(y);
+public class Coordinate implements Serializable {
+    private double latitude;
+    private double longitude;
+
+    public Coordinate(double latitude, double longitude) {
+       setLatitude(latitude);
+       setLongitude(longitude);
     }
 
-    public double getX() {
-        return x;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public double getY() {
-        return y;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

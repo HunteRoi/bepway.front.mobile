@@ -1,23 +1,27 @@
 package com.henallux.bepway.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Zoning {
+    private int id;
+    private String idOpenData;
     private String name;
-    private ArrayList<Coordinate> roads;
     private Coordinate zoningCenter;
     private String city;
     private String commune;
     private String url;
     private int superficie;
+    private int nbImplantations;
 
-    public Zoning(String name, String city, String commune, String url, int superficie, ArrayList<Coordinate> roads, Coordinate zoningCenter) {
+    public Zoning(){}
+
+    public Zoning(String name, String city, String commune, String url, int superficie, Coordinate zoningCenter) {
         setName(name);
         setCity(city);
         setCommune(commune);
         setUrl(url);
         setSuperficie(superficie);
-        setRoads(roads);
     }
 
     public Coordinate getZoningCenter(){return zoningCenter;}
@@ -34,14 +38,6 @@ public class Zoning {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ArrayList<Coordinate> getRoads() {
-        return roads;
-    }
-
-    public void setRoads(ArrayList<Coordinate> roads) {
-        this.roads = roads;
     }
 
     public String getCity() {
@@ -74,5 +70,29 @@ public class Zoning {
 
     public void setSuperficie(int superficie) {
         this.superficie = superficie;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getIdOpenData() {
+        return idOpenData;
+    }
+
+    public void setIdOpenData(String idOpenData) {
+        this.idOpenData = idOpenData;
+    }
+
+    public int getNbImplantations() {
+        return nbImplantations;
+    }
+
+    public void setNbImplantations(int nbImplantations) {
+        this.nbImplantations = nbImplantations;
     }
 }

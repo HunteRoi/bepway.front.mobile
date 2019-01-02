@@ -25,6 +25,8 @@ import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.model.Company;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class CompaniesActivity extends AppCompatActivity {
 
@@ -224,6 +226,12 @@ public class CompaniesActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
             allCompanies.addAll(companies);
+            /*Collections.sort(allCompanies, new Comparator<Company>() {
+                @Override
+                public int compare(Company o1, Company o2) {
+                    return Boolean.compare(o1.isPremium(), o2.isPremium());
+                }
+            });*/
             searchedCompanies = (ArrayList<Company>) allCompanies.clone();
             adapter = new AllCompaniesAdapter(allCompanies);
             companiesToDisplay.setAdapter(adapter);

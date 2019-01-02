@@ -1,4 +1,4 @@
-package com.henallux.bepway.features.activities;
+/*package com.henallux.bepway.features.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -94,6 +94,12 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        manager.removeUpdates(listener);
+        super.onStop();
+    }
+
     public class LoadZonings extends AsyncTask<Void, Void, ArrayList<Zoning>> {
         @Override
         protected ArrayList<Zoning> doInBackground(Void... voids) {
@@ -117,17 +123,18 @@ public class MapActivity extends AppCompatActivity {
             }
             /*points = new ArrayList<>();
             for(Coordinate coord : allZonings.get(0).getRoads()){
-                Log.i("DRAWdezd", coord.getX() + " - " + coord.getY());
-                //points.add(new PointF(coord.getX(), coord.getY()));
+                Log.i("DRAWdezd", coord.getLatitude() + " - " + coord.getLongitude());
+                //points.add(new PointF(coord.getLatitude(), coord.getLongitude()));
             }*/
-            surfaceMap.setPoints(allZonings.get(0).getRoads(), allZonings.get(0).getZoningCenter());
-            surfaceMap.draw();
+            //surfaceMap.setPoints(allZonings.get(0).getRoads(), allZonings.get(0).getZoningCenter());
+            /*surfaceMap.draw();
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
         }
+
     }
 
-}
+}*/

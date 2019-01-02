@@ -59,18 +59,14 @@ public class LogFragment extends Fragment {
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConnectivityManager conMan = ((ConnectivityManager)getActivity().getApplicationContext().getSystemService(CONNECTIVITY_SERVICE));
-                //boolean isWifiEnabled = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isAvailable();
-                //boolean is3GEnabled = !(conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.DISCONNECTED
-                        //&& conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getReason().equals("dataDisabled"));
-                //if(isWifiEnabled || is3GEnabled){
+                if(isWifiConnected() || is3GConnected()){
                     getToken = new GetToken();
                     loginModel = new LoginModel(username.getText().toString(), password.getText().toString());
                     getToken.execute(loginModel);
-                //}
-                //else{
+                }
+                else{
                     Toast.makeText(getActivity(), getString(R.string.no_connection_error), Toast.LENGTH_SHORT).show();
-                //}
+                }
             }
         });
 
@@ -85,6 +81,18 @@ public class LogFragment extends Fragment {
         //endregion
 
         return view;
+    }
+
+    private boolean isWifiConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return networkInfo.isConnected();
+    }
+
+    private boolean is3GConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return networkInfo.isConnected();
     }
 
     public class GetToken extends AsyncTask<LoginModel, Void, Token> {
@@ -112,6 +120,7 @@ public class LogFragment extends Fragment {
                 PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
                 .edit()
                 .putString("Token",token.getToken())
+                .putString("TokenExpirationDateInSec",Float.toString(token.getExpiresin()))
                 .putString("Login",loginModel.getLogin())
                 .putString("Password",loginModel.getPassword())
                 .apply();
