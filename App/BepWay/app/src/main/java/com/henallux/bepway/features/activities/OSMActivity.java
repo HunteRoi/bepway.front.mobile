@@ -116,7 +116,9 @@ public class OSMActivity extends AppCompatActivity {
         //roadTask.execute(waypoints);
 
         //map.getOverlayManager().add(mOverlay);
-        Coordinate center = (Coordinate) getIntent().getSerializableExtra("center");
+        Coordinate center = new Coordinate(89,89);
+        if(getIntent().getSerializableExtra("center") != null) center = (Coordinate) getIntent().getSerializableExtra("center");
+        else Log.i("klerkg","ITS NULL");
 
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(center.getLatitude(),center.getLongitude()));

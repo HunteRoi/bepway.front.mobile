@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.CompanyDAO;
@@ -42,12 +45,15 @@ public class CompaniesActivity extends AppCompatActivity {
     private CheckBox cityFilter;
     private Button filterValidation;
     private SearchView searchView;
+    private int pageNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_companies);
 
+        pageNumber = 0;
+        searchedCompanies = new ArrayList<>();
         companiesToDisplay = findViewById(R.id.recyclerView);
         companiesToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), companiesToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -55,6 +61,16 @@ public class CompaniesActivity extends AppCompatActivity {
                 showInformationPopup(searchedCompanies.get(position));
             }
         }));
+        /*companiesToDisplay.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(CompaniesActivity.this, "Last", Toast.LENGTH_LONG).show();
+                    loadCompanies.execute();
+                }
+            }
+        });*/
 
         dialogFilter = new Dialog(this);
         dialogFilter.setContentView(R.layout.filter_popup);
@@ -164,9 +180,9 @@ public class CompaniesActivity extends AppCompatActivity {
                 }
                 else {
                     if (cityFilter.isChecked()) {
-                        if(company.getCity() != null && company.getCity().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
+                        if(company.getAddress() != null && company.getAddress().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
                     } else {
-                        if(company.getName().toLowerCase().contains(newText.toLowerCase()) || company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getCity().toLowerCase().contains(newText.toLowerCase()))
+                        if(company.getName().toLowerCase().contains(newText.toLowerCase()) || company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getAddress().toLowerCase().contains(newText.toLowerCase()))
                             searchedCompanies.add(company);
                     }
                 }
@@ -216,7 +232,18 @@ public class CompaniesActivity extends AppCompatActivity {
                 Log.i("Company","Is cancelled");
             }
             try {
-                companies = companyDAO.getAllCompanies();
+                int zoningId;
+                String token = PreferenceManager.getDefaultSharedPreferences(CompaniesActivity.this).getString("Token",null);
+
+                if(getIntent().getIntExtra("zoningId",-5) != -5) {
+                    zoningId = getIntent().getIntExtra("zoningId",0);
+                    companies = companyDAO.getCompaniesByZoning(token, zoningId, pageNumber);
+                }
+                else{
+                    companies = companyDAO.getAllCompanies(token, pageNumber);
+                }
+                pageNumber++;
+                //companies = companyDAO.getAllCompanies();
             } catch (Exception e) {
                 Log.i("Company", e.getMessage());
             }
@@ -232,7 +259,7 @@ public class CompaniesActivity extends AppCompatActivity {
                     return Boolean.compare(o1.isPremium(), o2.isPremium());
                 }
             });*/
-            searchedCompanies = (ArrayList<Company>) allCompanies.clone();
+            searchedCompanies.addAll(allCompanies);
             adapter = new AllCompaniesAdapter(allCompanies);
             companiesToDisplay.setAdapter(adapter);
         }

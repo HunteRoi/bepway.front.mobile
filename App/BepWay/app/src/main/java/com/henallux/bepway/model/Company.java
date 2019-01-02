@@ -1,22 +1,33 @@
 package com.henallux.bepway.model;
 
 public class Company {
+    private int id;
     private String name;
     private String zoning;
-    private String city;
-    private String rueNumero;
+    private String address;
     private String sector;
+    private String status;
     private Coordinate location;
     private boolean isPremium;
+    private String description;
+    private String siteUrl;
+    private String imageUrl;
     //private Zoning zoning
 
-    public Company(String name, String zoning, String city, String rueNumero, String sector /*Coordinate location,Zoning zoning*/){
+    public Company(){}
+
+    public Company(int id, String name, String zoning, String address, String sector, String status, Coordinate location, boolean isPremium, String description, String siteUrl, String imageUrl /*Coordinate location,Zoning zoning*/){
+        setId(id);
         setName(name);
-        setRueNumero(rueNumero);
+        setAddress(address);
         setSector(sector);
-        setCity(city);
+        setStatus(status);
         setZoning(zoning);
-        setPremium(false);
+        setLocation(location);
+        setPremium(isPremium);
+        setDescription(description);
+        setSiteUrl(siteUrl);
+        setImageUrl(imageUrl);
         //setZoning(zoning);
         //setLocation(location);
     }
@@ -28,13 +39,6 @@ public class Company {
         output.append("\nName : " + getName());
         output.append("\nSector : " + getSector());
         output.append("\n"+getAddress());
-        return output.toString();
-    }
-
-    public String getAddress(){
-        StringBuilder output = new StringBuilder();
-        output.append((getRueNumero() == null)? "adresse non connue, " : getRueNumero()+", ");
-        output.append((getCity() == null)? " ville non connue" : getCity());
         return output.toString();
     }
 
@@ -54,20 +58,6 @@ public class Company {
         this.zoning = zoning;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) { this.city = city; }
-
-    public String getRueNumero() {
-        return rueNumero;
-    }
-
-    public void setRueNumero(String rueNumero) {
-        this.rueNumero = rueNumero;
-    }
-
     public String getSector() {
         return sector;
     }
@@ -84,6 +74,46 @@ public class Company {
         isPremium = premium;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSiteUrl() {
+        return siteUrl;
+    }
+
+    public void setSiteUrl(String siteUrl) {
+        this.siteUrl = siteUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     /*public void setZoning(Zoning zoning){
         this.zoning = zoning;
     }*/
@@ -98,5 +128,13 @@ public class Company {
 
     public void setLocation(Coordinate location) {
         this.location = location;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

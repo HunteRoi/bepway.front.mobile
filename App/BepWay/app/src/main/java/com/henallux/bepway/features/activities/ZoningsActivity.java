@@ -117,6 +117,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 dialog.dismiss();
                 Intent intentList = new Intent(ZoningsActivity.this, CompaniesActivity.class);
+                intentList.putExtra("zoningId", zoning.getId());
                 startActivity(intentList);
             }
         });
