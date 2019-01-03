@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class CompanyDAO {
-    public ArrayList<Company> getAllCompanies(String token, int pageIndex) throws Exception{
+    public ArrayList<Company> getAllCompanies(String token, int pageIndex, int pageSize) throws Exception{
         URL url = new URL("https://bepway.azurewebsites.net/api/Company");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -33,6 +33,10 @@ public class CompanyDAO {
         stringJSON = stringBuilder.toString();
         Log.i("Company", stringJSON);
         return jsonToCompanies(stringJSON);
+    }
+
+    public ArrayList<Company> getAllCompanies(String token, int pageIndex) throws  Exception{
+        return getAllCompanies(token, pageIndex, 15);
     }
 
     public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex) throws Exception{

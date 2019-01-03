@@ -20,9 +20,11 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.henallux.bepway.R;
+import com.henallux.bepway.dataAccess.CompanyDAO;
 import com.henallux.bepway.dataAccess.ZoningDAO;
 import com.henallux.bepway.features.adapters.AllZoningsAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
+import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
 
@@ -176,6 +178,39 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         protected void onPostExecute(ArrayList<Zoning> zonings) {
             for(Zoning zoning : zonings){
                 allZonings.add(zoning);
+            }
+            searchedZonings = (ArrayList<Zoning>)allZonings.clone();
+            adapter = new AllZoningsAdapter(allZonings);
+            zoningsToDisplay.setAdapter(adapter);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
+
+    public class loadCompanies extends AsyncTask<Void, Void, ArrayList<Company>> {
+        @Override
+        protected ArrayList<Company> doInBackground(Void... voids) {
+            ArrayList<Company> companies = new ArrayList<>();
+            CompanyDAO companyDAO = new CompanyDAO();
+            if(isCancelled()){
+                Log.i("Zoning","Is cancelled");
+            }
+            try {
+                String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
+                //companies = companyDAO.getAllCompanies()
+            } catch (Exception e) {
+                Log.i("Zoning", e.getMessage());
+            }
+            return companies;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Company> companies) {
+            for(Company company : companies){
+                //allZonings.add(zoning);
             }
             searchedZonings = (ArrayList<Zoning>)allZonings.clone();
             adapter = new AllZoningsAdapter(allZonings);
