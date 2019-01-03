@@ -44,51 +44,201 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
 
-        <ImageView
-            android:id="@+id/superficieIcon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="45dp"
-            android:src="@drawable/ic_superficy"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline13"
+            app:layout_constraintTop_toTopOf="@+id/guideline6">
+
+            <ImageView
+                android:id="@+id/superficieIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_superficy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/superficieTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/title_popup_zoning_superficie"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/superficieIcon"
+                app:layout_constraintRight_toRightOf="@id/superficieIcon"
+                app:layout_constraintTop_toBottomOf="@id/superficieIcon" />
+
+            <TextView
+                android:id="@+id/superficieZoning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/superficieIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/communeIcon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/ic_place"
+            <ImageView
+                android:id="@+id/communeIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_place"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/communeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/title_popup_zoning_commune"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/communeIcon"
+                app:layout_constraintRight_toRightOf="@id/communeIcon"
+                app:layout_constraintTop_toBottomOf="@id/communeIcon" />
+
+            <TextView
+                android:id="@+id/communeZoning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/communeIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/superficieZoning" />
+            app:layout_constraintTop_toTopOf="@+id/guideline6">
 
-        <ImageView
-            android:id="@+id/localiteIcon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="110dp"
-            android:layout_marginTop="15dp"
-            android:src="@drawable/ic_pin"
-            app:layout_constraintStart_toEndOf="@+id/communeIcon"
-            app:layout_constraintTop_toBottomOf="@+id/implentationsZoning" />
+            <ImageView
+                android:id="@+id/localiteIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_pin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/companyIcon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="110dp"
-            android:layout_marginTop="45dp"
-            android:src="@drawable/company_example"
-            app:layout_constraintStart_toEndOf="@+id/superficieIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/localiteTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/title_popup_zoning_localite"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/localiteIcon"
+                app:layout_constraintRight_toRightOf="@id/localiteIcon"
+                app:layout_constraintTop_toBottomOf="@id/localiteIcon" />
+
+            <TextView
+                android:id="@+id/localiteZoning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/localiteIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline6"
+            app:layout_constraintStart_toStartOf="@+id/guideline13"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/companyIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/company_example"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/implentationsZoning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/companyIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/implentationsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/title_popup_zoning_implantations"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/companyIcon"
+                app:layout_constraintRight_toRightOf="@id/companyIcon"
+                app:layout_constraintTop_toBottomOf="@id/companyIcon" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <ImageView
             android:id="@+id/mapViewZoning"
@@ -124,18 +274,6 @@
             android:src="@drawable/ic_web"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/superficieZoning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAlignment="textStart"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="@id/superficieIcon"
-            app:layout_constraintRight_toRightOf="@id/superficieIcon"
-            app:layout_constraintTop_toBottomOf="@id/superficieIcon" />
 
         <TextView
             android:id="@+id/textView2"
@@ -174,82 +312,21 @@
             app:layout_constraintRight_toRightOf="@id/webZoning"
             app:layout_constraintTop_toBottomOf="@id/webZoning" />
 
-        <TextView
-            android:id="@+id/superficieTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="45dp"
-            android:text="@string/title_popup_zoning_superficie"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/superficieIcon"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/communeZoning"
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="@id/communeIcon"
-            app:layout_constraintRight_toRightOf="@id/communeIcon"
-            app:layout_constraintTop_toBottomOf="@id/communeIcon" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.36" />
 
-        <TextView
-            android:id="@+id/communeTitle"
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="68dp"
-            android:text="@string/title_popup_zoning_commune"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/communeIcon"
-            app:layout_constraintTop_toBottomOf="@+id/superficieTitle" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
 
-        <TextView
-            android:id="@+id/implentationsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="45dp"
-            android:text="@string/title_popup_zoning_implantations"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/companyIcon"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/implentationsZoning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="@id/companyIcon"
-            app:layout_constraintRight_toRightOf="@id/companyIcon"
-            app:layout_constraintTop_toBottomOf="@id/companyIcon" />
-
-        <TextView
-            android:id="@+id/localiteZoning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="@id/localiteIcon"
-            app:layout_constraintRight_toRightOf="@id/localiteIcon"
-            app:layout_constraintTop_toBottomOf="@id/localiteIcon" />
-
-        <TextView
-            android:id="@+id/localiteTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="68dp"
-            android:text="@string/title_popup_zoning_localite"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/localiteIcon"
-            app:layout_constraintTop_toBottomOf="@+id/implentationsTitle" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

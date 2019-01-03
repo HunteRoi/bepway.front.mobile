@@ -25,7 +25,6 @@ import com.henallux.bepway.dataAccess.ZoningDAO;
 import com.henallux.bepway.features.adapters.AllZoningsAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.model.Company;
-import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
 
 import java.io.Serializable;
@@ -136,9 +135,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent i = new Intent(ZoningsActivity.this, OSMActivity.class);
-                i.putExtra("center", zoning.getZoningCenter());
-                startActivity(i);
+                LoadCompanies loadCompanies = new LoadCompanies();
+                loadCompanies.execute(zoning);
             }
         });
         textClose.setOnClickListener(new View.OnClickListener() {
@@ -190,9 +188,11 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         }
     }
 
-    public class loadCompanies extends AsyncTask<Void, Void, ArrayList<Company>> {
+    public class LoadCompanies extends AsyncTask<Zoning, Void, ArrayList<Company>> {
+        private Zoning zoning;
         @Override
-        protected ArrayList<Company> doInBackground(Void... voids) {
+        protected ArrayList<Company> doInBackground(Zoning... params) {
+            zoning = params[0];
             ArrayList<Company> companies = new ArrayList<>();
             CompanyDAO companyDAO = new CompanyDAO();
             if(isCancelled()){
@@ -200,7 +200,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
-                //companies = companyDAO.getAllCompanies()
+                companies = companyDAO.getCompaniesByZoning(token, params[0].getId(),0, params[0].getNbImplantations());
             } catch (Exception e) {
                 Log.i("Zoning", e.getMessage());
             }
@@ -209,12 +209,10 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
 
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
-            for(Company company : companies){
-                //allZonings.add(zoning);
-            }
-            searchedZonings = (ArrayList<Zoning>)allZonings.clone();
-            adapter = new AllZoningsAdapter(allZonings);
-            zoningsToDisplay.setAdapter(adapter);
+            Intent intent = new Intent(ZoningsActivity.this, OSMActivity.class);
+            intent.putExtra("zoningCenter",zoning.getZoningCenter());
+            intent.putExtra("companies", companies);
+            startActivity(intent);
         }
 
         @Override

@@ -6,6 +6,8 @@ public class Coordinate implements Serializable {
     private double latitude;
     private double longitude;
 
+    public Coordinate(){}
+
     public Coordinate(double latitude, double longitude) {
        setLatitude(latitude);
        setLongitude(longitude);

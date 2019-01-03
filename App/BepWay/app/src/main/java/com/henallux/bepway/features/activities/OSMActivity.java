@@ -1,6 +1,8 @@
 package com.henallux.bepway.features.activities;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
+import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
@@ -9,12 +11,19 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,11 +33,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.henallux.bepway.R;
+import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
 
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
@@ -40,6 +54,7 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,22 +67,17 @@ public class OSMActivity extends AppCompatActivity {
     private RoadTask roadTask;
     private LocationManager manager;
     private LocationListener listener;
+    private Dialog dialog;
+    private MyLocationNewOverlay myLocationNewOverlay;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_osm);
 
-        /*org.osmdroid.config.IConfigurationProvider osmConf = org.osmdroid.config.Configuration.getInstance();
-        File basePath = new File(getCacheDir().getAbsolutePath(), "osmdroid");
-        osmConf.setOsmdroidBasePath(basePath);
-        File tileCache = new File(osmConf.getOsmdroidBasePath().getAbsolutePath(), "tile");
-        osmConf.setOsmdroidTileCache(tileCache);*/
 
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.zoning_popup);
         //handle permissions first, before map is created. not depicted here
-
         //load/initialize the osmdroid configuration, this can be done
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -76,8 +86,6 @@ public class OSMActivity extends AppCompatActivity {
         //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
         //see also StorageUtils
         //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's tile servers will get you banned based on this string
-
-
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -93,37 +101,64 @@ public class OSMActivity extends AppCompatActivity {
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-        ArrayList<OverlayItem> items = new ArrayList<>();
+
+        //Get zoning center + its companies and put marker on them
+        Coordinate center = new Coordinate();
+        ArrayList<Company> companies = new ArrayList<>();
+
+        if(getIntent().getSerializableExtra("zoningCenter") != null) {
+            center = (Coordinate) getIntent().getSerializableExtra("zoningCenter");
+            Marker marker = new Marker(map);
+            marker.setPosition(new GeoPoint(center.getLatitude(),center.getLongitude()));
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setIcon(this.getResources().getDrawable(R.drawable.ic_pin_map, null));
+            map.getOverlayManager().add(marker);
+        }
+
+        if(getIntent().getSerializableExtra("companies") != null){
+            companies = (ArrayList<Company>) getIntent().getSerializableExtra("companies");
+            //Drawable markerCompany = this.getResources().getDrawable(R.drawable.ic_place_map, null);
+            ArrayList<OverlayItem> items = new ArrayList<>();
+            for(Company company : companies){
+                OverlayItem item = new OverlayItem(company.getName(), company.getSector(), new GeoPoint(company.getLocation().getLatitude(),company.getLocation().getLongitude()));
+                //item.setMarker(markerCompany);
+                items.add(item);
+            }
+
+            ItemizedIconOverlay.OnItemGestureListener<OverlayItem> listener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                @Override
+                public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                    return false;
+                }
+
+                @Override
+                public boolean onItemLongPress(int index, OverlayItem item) {
+                    showPopup();
+                    return false;
+                }
+            };
+
+            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, listener);
+            mOverlay.setFocusItemsOnTap(true);
+            map.getOverlays().add(mOverlay);
+        }
+
+        myLocationNewOverlay = new MyLocationNewOverlay(map);
+        map.getOverlays().add(myLocationNewOverlay);
+        myLocationNewOverlay.enableMyLocation();
+
         //items.add(new OverlayItem("Zoning de ciney", "c un pt randon", new GeoPoint(50.309,5.108)));
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(getApplicationContext(), items, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-            @Override
-            public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                return false;
-            }
 
-            @Override
-            public boolean onItemLongPress(int index, OverlayItem item) {
-                return false;
-            }
-        });
-        mOverlay.setFocusItemsOnTap(true);
 
-        ArrayList<GeoPoint> waypoints = new ArrayList<>();
+        /*ArrayList<GeoPoint> waypoints = new ArrayList<>();
         waypoints.add(startPoint);
         GeoPoint endPoint = new GeoPoint(50.30925, 5.10866);
-        waypoints.add(endPoint);
+        waypoints.add(endPoint);*/
         //roadTask = new RoadTask();
         //roadTask.execute(waypoints);
 
         //map.getOverlayManager().add(mOverlay);
-        Coordinate center = new Coordinate(89,89);
-        if(getIntent().getSerializableExtra("center") != null) center = (Coordinate) getIntent().getSerializableExtra("center");
-        else Log.i("klerkg","ITS NULL");
 
-        Marker marker = new Marker(map);
-        marker.setPosition(new GeoPoint(center.getLatitude(),center.getLongitude()));
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlayManager().add(marker);
 
         /*RoadManager roadManager = new OSRMRoadManager(this);
         ArrayList<GeoPoint> waypoints = new ArrayList<>();
@@ -172,6 +207,20 @@ public class OSMActivity extends AppCompatActivity {
 
     }
 
+    public void showPopup(){
+        TextView textClose = dialog.findViewById(R.id.close_popup_zoning);
+        TextView superficie = dialog.findViewById(R.id.superficieZoning);
+        TextView nbImplantations = dialog.findViewById(R.id.implentationsZoning);
+        TextView nomZoning = dialog.findViewById(R.id.zoningTitle);
+        TextView localite = dialog.findViewById(R.id.localiteZoning);
+        TextView commune = dialog.findViewById(R.id.communeZoning);
+        ImageView companies = dialog.findViewById(R.id.listCompaniesPopup);
+        ImageView website = dialog.findViewById(R.id.webZoning);
+        ImageView map = dialog.findViewById(R.id.mapViewZoning);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -185,8 +234,7 @@ public class OSMActivity extends AppCompatActivity {
     private class RoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
         protected Road doInBackground(ArrayList<GeoPoint>... params) {
             ArrayList<GeoPoint> waypoints = params[0];
-            RoadManager roadManager = new OSRMRoadManager(OSMActivity.this);
-            roadManager.addRequestOption("key=W9jJpleg3DK5A2gnGfCQmfTtZF1MaAvH");
+            RoadManager roadManager = new MapQuestRoadManager(getResources().getString(R.string.mapQuest_apiKey));
             return roadManager.getRoad(waypoints);
         }
 

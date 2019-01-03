@@ -61,7 +61,7 @@ public class LogFragment extends Fragment {
             public void onClick(View v) {
                 if(isWifiConnected() || is3GConnected()){
                     getToken = new GetToken();
-                    loginModel = new LoginModel(username.getText().toString(), password.getText().toString());
+                    loginModel = new LoginModel(username.getText().toString().trim(), password.getText().toString().trim());
                     getToken.execute(loginModel);
                 }
                 else{

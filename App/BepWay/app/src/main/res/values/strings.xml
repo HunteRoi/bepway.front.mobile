@@ -52,4 +52,5 @@
     <string name="guest_message">Bienvenue sur notre application, si vous n\'avez pas de compte, vous pouvez continuer en tant qu\'invité, sinon vous pouvez vous connecter sur l\'onglet suivant</string>
     <string name="guest_login">Continuer en tant qu\'invité</string>
     <string name="no_connection_error">Une  connexion est nécessaire</string>
+    <string name="mapQuest_apiKey">	W9jJpleg3DK5A2gnGfCQmfTtZF1MaAvH</string>
 </resources>
