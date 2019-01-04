@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,8 +31,6 @@ import com.henallux.bepway.features.adapters.AllCompaniesAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.model.Company;
 
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +51,7 @@ public class CompaniesActivity extends AppCompatActivity {
     private Button filterValidation;
     private SearchView searchView;
     private int pageNumber;
+    private int zoningId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,25 +61,55 @@ public class CompaniesActivity extends AppCompatActivity {
         pageNumber = 0;
         searchedCompanies = new ArrayList<>();
         companiesToDisplay = findViewById(R.id.recyclerView);
+
+        final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+
         companiesToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), companiesToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 showInformationPopup(searchedCompanies.get(position));
             }
         }));
-        /*companiesToDisplay.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        companiesToDisplay.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+
                 if (!recyclerView.canScrollVertically(1)) {
                     Toast.makeText(CompaniesActivity.this, "Last", Toast.LENGTH_LONG).show();
-                    loadCompanies.execute();
+                    LoadCompanies addCompanies = new LoadCompanies();
+                    addCompanies.execute();
                 }
             }
-        });*/
+            /*@Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentItems = layoutManager.getChildCount();
+                totalItems = layoutManager.getItemCount();
+                scrollOutItems = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+
+                if(isScrolling && (currentItems + scrollOutItems == totalItems)){
+                    isScrolling = false;
+                    //loadCompanies.execute();
+                }
+            }*/
+        });
+
+        zoningId = getIntent().getIntExtra("zoningId", -5);
 
         dialogFilter = new Dialog(this);
-        dialogFilter.setContentView(R.layout.filter_popup);
+        if(zoningId == -5) dialogFilter.setContentView(R.layout.filter_all_companies_popup);
+        else dialogFilter.setContentView(R.layout.filter_popup);
+
 
         nameFilter = dialogFilter.findViewById(R.id.checkName);
         sectorFilter = dialogFilter.findViewById(R.id.checkSector);
@@ -129,9 +157,7 @@ public class CompaniesActivity extends AppCompatActivity {
         dialogCompanyInfo = new Dialog(this);
 
         allCompanies = new ArrayList<>();
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+        adapter = new AllCompaniesAdapter(allCompanies);
 
         companiesToDisplay.addItemDecoration(decoration);
         companiesToDisplay.setLayoutManager(layoutManager);
@@ -286,18 +312,15 @@ public class CompaniesActivity extends AppCompatActivity {
                 Log.i("Company","Is cancelled");
             }
             try {
-                int zoningId;
                 String token = PreferenceManager.getDefaultSharedPreferences(CompaniesActivity.this).getString("Token",null);
 
-                if(getIntent().getIntExtra("zoningId",-5) != -5) {
-                    zoningId = getIntent().getIntExtra("zoningId",0);
+                if(zoningId != -5) {
                     companies = companyDAO.getCompaniesByZoning(token, zoningId, pageNumber);
                 }
                 else{
                     companies = companyDAO.getAllCompanies(token, pageNumber);
                 }
                 pageNumber++;
-                //companies = companyDAO.getAllCompanies();
             } catch (Exception e) {
                 Log.i("Company", e.getMessage());
             }
@@ -307,14 +330,13 @@ public class CompaniesActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
             allCompanies.addAll(companies);
-            /*Collections.sort(allCompanies, new Comparator<Company>() {
+            Collections.sort(searchedCompanies, new Comparator<Company>() {
                 @Override
                 public int compare(Company o1, Company o2) {
                     return Boolean.compare(o1.isPremium(), o2.isPremium());
                 }
-            });*/
-            searchedCompanies.addAll(allCompanies);
-            adapter = new AllCompaniesAdapter(allCompanies);
+            });
+            searchedCompanies.addAll(companies);
             companiesToDisplay.setAdapter(adapter);
         }
 

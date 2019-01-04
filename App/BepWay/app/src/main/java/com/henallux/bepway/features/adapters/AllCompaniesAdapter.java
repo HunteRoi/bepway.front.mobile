@@ -17,7 +17,7 @@ public class AllCompaniesAdapter extends RecyclerView.Adapter<AllCompaniesAdapte
     private ArrayList<Company> companies;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
+
         public TextView companyName, companyActivity, companyAddress;
         public ImageView premium;
         public MyViewHolder(View v) {
@@ -29,23 +29,29 @@ public class AllCompaniesAdapter extends RecyclerView.Adapter<AllCompaniesAdapte
         }
     }
 
-    public void setCompanies(ArrayList<Company> companies){
-        this.companies = companies;
+    public void addCompanies(ArrayList<Company> companies){
+        this.companies.addAll(companies);
+        this.notifyDataSetChanged();
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
+    public void setCompanies(ArrayList<Company> companies){
+        this.companies = companies;
+        this.notifyDataSetChanged();
+    }
+
+
     public AllCompaniesAdapter(ArrayList<Company> companies){
         this.companies = companies;
     }
 
-    // Create new views (invoked by the layout manager)
+
     @Override
     public AllCompaniesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_company_layout,parent,false);
         return new MyViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
@@ -57,7 +63,6 @@ public class AllCompaniesAdapter extends RecyclerView.Adapter<AllCompaniesAdapte
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return companies.size();

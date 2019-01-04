@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intentMap = new Intent(MainActivity.this, OSMActivity.class);
                                 startActivity(intentMap);
                                 break;
+                            case R.id.nav_research :
+                                break;
                             case R.id.nav_disconnect:
                                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext().getApplicationContext())
                                 .edit()

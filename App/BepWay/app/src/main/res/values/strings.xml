@@ -11,7 +11,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="settingsItem">Paramètres</string>
     <string name="logOutItem">Se déconnecter</string>
-    <string name="researchItem">Recherche</string>
+    <string name="researchItem">Rechercher une entreprise</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_test_login">TestLoginActivity</string>
@@ -54,4 +54,5 @@
     <string name="no_connection_error">Une  connexion est nécessaire</string>
     <string name="mapQuest_apiKey">	W9jJpleg3DK5A2gnGfCQmfTtZF1MaAvH</string>
     <string name="no_url_provided">Pas de site web fourni</string>
+    <string name="osm_credit">© OpenStreetMap contributors</string>
 </resources>

@@ -8,6 +8,7 @@ import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 
 import android.Manifest;
@@ -34,6 +35,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
@@ -54,21 +57,23 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OSMActivity extends AppCompatActivity {
+public class OSMActivity extends AppCompatActivity implements MapEventsReceiver {
 
     private MapView map = null;
     private RoadManager roadManager;
     private Road road;
     private RoadTask roadTask;
-    private LocationManager manager;
-    private LocationListener listener;
     private Dialog dialog;
     private MyLocationNewOverlay myLocationNewOverlay;
+    private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
+    private ImageButton getMyLocation;
+    private ImageButton centerMap;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,11 +97,43 @@ public class OSMActivity extends AppCompatActivity {
         map.setZoomRounding(true);
         map.setMultiTouchControls(true);
 
-        IMapController mapController = map.getController();
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(0, mapEventsOverlay);
+
+        myLocationNewOverlay = new MyLocationNewOverlay(map);
+
+        myLocationNewOverlay.enableMyLocation();
+        map.getOverlays().add(myLocationNewOverlay);
+
+        final IMapController mapController = map.getController();
 
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this),map);
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
+
+        getMyLocation = findViewById(R.id.ic_follow_me);
+        getMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if(!myLocationNewOverlay.isFollowLocationEnabled()){
+                   myLocationNewOverlay.enableFollowLocation();
+                   myLocationNewOverlay.enableMyLocation();
+                   getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
+               }
+               else{
+                   myLocationNewOverlay.disableFollowLocation();
+                   myLocationNewOverlay.disableMyLocation();
+                   getMyLocation.setImageResource(R.drawable.ic_follow_me);
+               }
+            }
+        });
+        centerMap = findViewById(R.id.ic_center_map);
+        centerMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapController.setCenter(myLocationNewOverlay.getMyLocation());
+            }
+        });
 
         Coordinate center = new Coordinate();
 
@@ -108,13 +145,22 @@ public class OSMActivity extends AppCompatActivity {
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                showPopup();
+                RoadTask task = new RoadTask();
+                ArrayList<GeoPoint> waypoints = new ArrayList<>();
+                waypoints.add(myLocationNewOverlay.getMyLocation());
+                waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
+                mapController.setCenter(myLocationNewOverlay.getMyLocation());
+                //mOverlayMarkers.removeAllItems();
+                myLocationNewOverlay.enableFollowLocation();
+                task.execute(waypoints);
                 return false;
             }
         };
 
-        if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(16.0);
-        else mapController.setZoom(19.0);
+        if(getIntent().getSerializableExtra("center") != null){
+            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(16.0);
+            else mapController.setZoom(19.0);
+        }
 
         if(getIntent().getSerializableExtra("center") != null) {
             //Get zoning center + its companies and put marker on them
@@ -135,15 +181,11 @@ public class OSMActivity extends AppCompatActivity {
                 items.add(item);
             }
 
-            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, itemListener);
-            mOverlay.setFocusItemsOnTap(true);
-            map.getOverlays().add(mOverlay);
+            mOverlayMarkers = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, itemListener);
+            mOverlayMarkers.setFocusItemsOnTap(true);
+            map.getOverlays().add(mOverlayMarkers);
         }
 
-
-        myLocationNewOverlay = new MyLocationNewOverlay(map);
-        map.getOverlays().add(myLocationNewOverlay);
-        myLocationNewOverlay.enableMyLocation();
 
         //items.add(new OverlayItem("Zoning de ciney", "c un pt randon", new GeoPoint(50.309,5.108)));
 
@@ -169,40 +211,6 @@ public class OSMActivity extends AppCompatActivity {
         //map.getOverlays().add(roadOverlay);
         //map.invalidate();
 
-        manager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        listener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) { ;
-                Log.i("lcoation",location.getLatitude()+ " - " + location.getLongitude());
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        if(Build.VERSION.SDK_INT < 23){
-            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-        }
-        else{
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-                return;
-            }else {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            }
-        }
-
     }
 
     public void showPopup(){
@@ -220,13 +228,14 @@ public class OSMActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            }
-        }
+    public boolean singleTapConfirmedHelper(GeoPoint p) {
+        InfoWindow.closeAllInfoWindowsOn(map);
+        return false;
+    }
+
+    @Override
+    public boolean longPressHelper(GeoPoint p) {
+        return false;
     }
 
     private class RoadTask extends AsyncTask<ArrayList<GeoPoint>, Void, Road> {
@@ -254,6 +263,7 @@ public class OSMActivity extends AppCompatActivity {
                 nodeMarker.setPosition(node.mLocation);
                 //nodeMarker.setIcon(nodeIcon);
                 nodeMarker.setSnippet(node.mInstructions);
+                nodeMarker.setSubDescription(Road.getLengthDurationText(OSMActivity.this, node.mLength, node.mDuration));
                 nodeMarker.setTitle("Step "+i);
                 map.getOverlays().add(nodeMarker);
             }
