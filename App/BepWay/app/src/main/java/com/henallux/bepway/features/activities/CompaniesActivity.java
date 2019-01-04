@@ -1,8 +1,12 @@
 package com.henallux.bepway.features.activities;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +32,9 @@ import com.henallux.bepway.features.adapters.AllCompaniesAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.model.Company;
 
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -119,7 +127,6 @@ public class CompaniesActivity extends AppCompatActivity {
         });
 
         dialogCompanyInfo = new Dialog(this);
-        dialogCompanyInfo.setContentView(R.layout.premium_company_popup);
 
         allCompanies = new ArrayList<>();
 
@@ -203,14 +210,61 @@ public class CompaniesActivity extends AppCompatActivity {
         dialogFilter.show();
     }
 
-    public void showInformationPopup(Company company){
+    public void showInformationPopup(final Company company){
+        if(company.isPremium()){
+            dialogCompanyInfo.setContentView(R.layout.premium_company_popup);
+            TextView description = dialogCompanyInfo.findViewById(R.id.companyDescription);
+            ImageView image = dialogCompanyInfo.findViewById(R.id.companyImage);
+            ImageView website = dialogCompanyInfo.findViewById(R.id.companyWebsite);
+            description.setText(company.getDescription() == null? "" : company.getDescription());
+            if(company.getImageUrl() != null){
+                try{
+                    URL url = new URL(company.getImageUrl());
+                    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    image.setImageBitmap(bmp);
+                }
+                catch (Exception exception){
+                    Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            website.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(company.getSiteUrl() != null){
+                        dialogCompanyInfo.dismiss();
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(company.getSiteUrl()));
+                        startActivity(i);
+                    }
+                    else{
+                        Toast.makeText(CompaniesActivity.this, getString(R.string.no_url_provided), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+        else{
+            dialogCompanyInfo.setContentView(R.layout.company_popup);
+        }
         TextView textClose = (TextView) dialogCompanyInfo.findViewById(R.id.close_popup_company);
         TextView companyName = dialogCompanyInfo.findViewById(R.id.companyName);
+        ImageView map = dialogCompanyInfo.findViewById(R.id.companyMap);
         companyName.setText(company.getName());
         textClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogCompanyInfo.dismiss();
+            }
+        });
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CompaniesActivity.this, OSMActivity.class);
+                ArrayList<Company> companies = new ArrayList<>();
+                companies.add(company);
+                intent.putExtra("type","Company");
+                intent.putExtra("center", company.getLocation());
+                intent.putExtra("companies",companies);
+                startActivity(intent);
             }
         });
         dialogCompanyInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

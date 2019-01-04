@@ -53,4 +53,5 @@
     <string name="guest_login">Continuer en tant qu\'invité</string>
     <string name="no_connection_error">Une  connexion est nécessaire</string>
     <string name="mapQuest_apiKey">	W9jJpleg3DK5A2gnGfCQmfTtZF1MaAvH</string>
+    <string name="no_url_provided">Pas de site web fourni</string>
 </resources>

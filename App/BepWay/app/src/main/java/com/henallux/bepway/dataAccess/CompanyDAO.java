@@ -75,7 +75,7 @@ public class CompanyDAO {
                 JSONObject coordinate = companyJson.getJSONObject("coordinates");
                 JSONObject sector = null;
                 if(!companyJson.isNull("activitySector"))sector = companyJson.getJSONObject("activitySector");
-                JSONObject zoning = companyJson.getJSONObject("zoning");
+                //JSONObject zoning = companyJson.getJSONObject("zoning");
                 company.setId(companyJson.getInt("id"));
                 company.setName(companyJson.getString("name"));
                 company.setImageUrl(companyJson.getString("imageUrl"));
@@ -86,7 +86,7 @@ public class CompanyDAO {
                 company.setPremium(companyJson.getBoolean("isPremium"));
                 company.setSector(sector == null? "Secteur d'activité non spécifié" : sector.getString("name"));
                 company.setLocation(new Coordinate(Double.parseDouble(coordinate.getString("latitude")), Double.parseDouble(coordinate.getString("longitude"))));
-                company.setZoning(zoning.getString("name"));
+                //company.setZoning(zoning.getString("name"));
                 companies.add(company);
             }
         }

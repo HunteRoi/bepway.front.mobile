@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.henallux.bepway.Exception.ApiErrorException;
 import com.henallux.bepway.model.Coordinate;
 import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 
 public class ZoningDAO {
 
-    public ArrayList<Zoning> getAllZoningsAPI(String token) throws Exception{
+    public ArrayList<Zoning> getAllZoningsAPI(String token) throws ApiErrorException, Exception{
         //URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=parcs-dactivite-economique&facet=bep_services_dbo_gestparc_pae_equipements_hallrelais&facet=bep_services_dbo_gestparc_pae_equipements_gaz&facet=bep_services_dbo_gestparc_pae_equipements_fibreoptique&facet=bep_services_dbo_gestparc_pae_equipements_adsl&facet=bep_services_dbo_gestparc_pae_equipements_coaxial&facet=bep_services_dbo_gestparc_pae_equipements_assainissementcollectif&facet=bep_services_dbo_gestparc_pae_caracteristiques_type&facet=bep_services_dbo_gestparc_pae_caracteristiques_localisation&facet=bep_services_dbo_gestparc_pae_caracteristiques_commune&facet=bep_services_dbo_gestparc_pae_caracteristiques_prixvente");
         URL url = new URL("https://bepway.azurewebsites.net/api/Zoning");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        //if(connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) throw new ApiErrorException("Error coming from the API");
 
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");

@@ -93,27 +93,37 @@ public class OSMActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(50.30553, 5.10502);
-        mapController.setCenter(startPoint);
 
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this),map);
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-
-        //Get zoning center + its companies and put marker on them
         Coordinate center = new Coordinate();
-        ArrayList<Company> companies = new ArrayList<>();
 
-        if(getIntent().getSerializableExtra("zoningCenter") != null) {
-            center = (Coordinate) getIntent().getSerializableExtra("zoningCenter");
-            Marker marker = new Marker(map);
-            marker.setPosition(new GeoPoint(center.getLatitude(),center.getLongitude()));
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            marker.setIcon(this.getResources().getDrawable(R.drawable.ic_pin_map, null));
-            map.getOverlayManager().add(marker);
+        ItemizedIconOverlay.OnItemGestureListener<OverlayItem> itemListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                return false;
+            }
+
+            @Override
+            public boolean onItemLongPress(int index, OverlayItem item) {
+                showPopup();
+                return false;
+            }
+        };
+
+        if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(16.0);
+        else mapController.setZoom(19.0);
+
+        if(getIntent().getSerializableExtra("center") != null) {
+            //Get zoning center + its companies and put marker on them
+            center = (Coordinate) getIntent().getSerializableExtra("center");
+            GeoPoint centerCoord = new GeoPoint(center.getLatitude(),center.getLongitude());
+            mapController.setCenter(centerCoord);
         }
+
+        ArrayList<Company> companies = new ArrayList<>();
 
         if(getIntent().getSerializableExtra("companies") != null){
             companies = (ArrayList<Company>) getIntent().getSerializableExtra("companies");
@@ -125,23 +135,11 @@ public class OSMActivity extends AppCompatActivity {
                 items.add(item);
             }
 
-            ItemizedIconOverlay.OnItemGestureListener<OverlayItem> listener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-                @Override
-                public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                    return false;
-                }
-
-                @Override
-                public boolean onItemLongPress(int index, OverlayItem item) {
-                    showPopup();
-                    return false;
-                }
-            };
-
-            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, listener);
+            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, itemListener);
             mOverlay.setFocusItemsOnTap(true);
             map.getOverlays().add(mOverlay);
         }
+
 
         myLocationNewOverlay = new MyLocationNewOverlay(map);
         map.getOverlays().add(myLocationNewOverlay);

@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.CompanyDAO;
@@ -202,7 +203,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
                 companies = companyDAO.getCompaniesByZoning(token, params[0].getId(),0, params[0].getNbImplantations());
             } catch (Exception e) {
-                Log.i("Zoning", e.getMessage());
+                Toast.makeText(ZoningsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return companies;
         }
@@ -210,7 +211,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
             Intent intent = new Intent(ZoningsActivity.this, OSMActivity.class);
-            intent.putExtra("zoningCenter",zoning.getZoningCenter());
+            intent.putExtra("type","Zoning");
+            intent.putExtra("center",zoning.getZoningCenter());
             intent.putExtra("companies", companies);
             startActivity(intent);
         }
