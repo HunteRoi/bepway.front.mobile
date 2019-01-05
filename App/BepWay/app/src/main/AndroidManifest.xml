@@ -42,9 +42,6 @@
             android:parentActivityName=".features.activities.MainActivity" />
         <activity android:name=".features.activities.LoginActivity"></activity>
         <activity
-            android:name=".features.activities.MapActivity"
-            android:parentActivityName=".features.activities.MainActivity" />
-        <activity
             android:name=".features.activities.SplashActivity"
             android:theme="@style/splash">
             <intent-filter>
@@ -53,7 +50,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".features.activities.OSMActivity"></activity>
+        <activity
+            android:name=".features.activities.OSMActivity"
+            android:configChanges="orientation"/>
     </application>
 
 </manifest>

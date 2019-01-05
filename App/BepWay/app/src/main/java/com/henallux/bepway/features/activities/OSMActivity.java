@@ -55,7 +55,9 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -67,6 +69,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     private MapView map = null;
     private RoadManager roadManager;
+    private IMapController mapController;
     private Road road;
     private RoadTask roadTask;
     private Dialog dialog;
@@ -97,6 +100,10 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         map.setZoomRounding(true);
         map.setMultiTouchControls(true);
 
+        RotationGestureOverlay gestureOverlay = new RotationGestureOverlay(map);
+        gestureOverlay.setEnabled(true);
+        map.getOverlays().add(gestureOverlay);
+
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(0, mapEventsOverlay);
 
@@ -105,7 +112,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         myLocationNewOverlay.enableMyLocation();
         map.getOverlays().add(myLocationNewOverlay);
 
-        final IMapController mapController = map.getController();
+        mapController = map.getController();
 
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this),map);
         compassOverlay.enableCompass();
@@ -151,7 +158,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                 waypoints.add(myLocationNewOverlay.getMyLocation());
                 waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
                 mapController.setCenter(myLocationNewOverlay.getMyLocation());
-                //mOverlayMarkers.removeAllItems();
+                map.getOverlays().remove(mOverlayMarkers);
                 myLocationNewOverlay.enableFollowLocation();
                 mapController.setZoom(20.0);
                 task.execute(waypoints);
@@ -179,7 +186,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             ArrayList<OverlayItem> items = new ArrayList<>();
             for(Company company : companies){
                 OverlayItem item = new OverlayItem(company.getName(), company.getSector(), new GeoPoint(company.getLocation().getLatitude(),company.getLocation().getLongitude()));
-                //item.setMarker(markerCompany);
                 items.add(item);
             }
 
@@ -215,6 +221,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     }
 
+
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         InfoWindow.closeAllInfoWindowsOn(map);
@@ -236,9 +243,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         @Override
         protected void onPostExecute(Road result) {
             road = result;
-            // showing distance and duration of the road
-            //Toast.makeText(OSMActivity.this, "distance="+road.mLength, Toast.LENGTH_LONG).show();
-            //Toast.makeText(OSMActivity.this, "durée="+road.mDuration, Toast.LENGTH_LONG).show();
 
             if(road.mStatus != Road.STATUS_OK)
                 Toast.makeText(OSMActivity.this, "Error when loading the road - status="+road.mStatus, Toast.LENGTH_SHORT).show();
@@ -253,6 +257,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                 nodeMarker.setSnippet(node.mInstructions);
                 nodeMarker.setSubDescription(Road.getLengthDurationText(OSMActivity.this, node.mLength, node.mDuration));
                 nodeMarker.setTitle("Step "+i);
+                map.setMapOrientation((float)myLocationNewOverlay.getMyLocation().bearingTo(node.mLocation));
                 map.getOverlays().add(nodeMarker);
             }
 
@@ -261,6 +266,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             //updateUIWithRoad(result);
         }
     }
+
+   /* public float getDegrees(GeoPoint location, GeoPoint destination){
+        double dLon = destination.getLongitude() - location.getLongitude();
+        return double y = Math.sin(dLon) * Math.cos(destination.getLatitude());
+        double x = Math.cos(location.getLatitude()) * Math.sin(destination.getLatitude()) - Math.sin(location.)
+    }*/
+
 
     public void onResume(){
         super.onResume();
