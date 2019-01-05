@@ -77,11 +77,26 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
     private ImageButton getMyLocation;
     private ImageButton centerMap;
+    private LocationManager manager;
+    private LocationListener listener;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_osm);
 
+        myLocationNewOverlay.
+
+        if(Build.VERSION.SDK_INT < 23){
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+        }
+        else{
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+                return;
+            }else {
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+            }
+        }
 
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.zoning_popup);
@@ -118,13 +133,15 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
+        //myLocationNewOverlay.
+
+
         getMyLocation = findViewById(R.id.ic_follow_me);
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                if(!myLocationNewOverlay.isFollowLocationEnabled()){
-                   myLocationNewOverlay.enableFollowLocation();
-                   myLocationNewOverlay.enableMyLocation();
+                   centerMap.performClick();
                    getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
                }
                else{
@@ -139,7 +156,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myLocationNewOverlay.enableMyLocation();
+                myLocationNewOverlay.enableFollowLocation();
+                mapController.setZoom(20.0);
                 mapController.setCenter(myLocationNewOverlay.getMyLocation());
+
             }
         });
 
@@ -260,22 +281,17 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                 map.setMapOrientation((float)myLocationNewOverlay.getMyLocation().bearingTo(node.mLocation));
                 map.getOverlays().add(nodeMarker);
             }
-
+            myLocationNewOverlay.enableFollowLocation();
             map.getOverlays().add(roadOverlay);
             map.invalidate();
             //updateUIWithRoad(result);
         }
     }
 
-   /* public float getDegrees(GeoPoint location, GeoPoint destination){
-        double dLon = destination.getLongitude() - location.getLongitude();
-        return double y = Math.sin(dLon) * Math.cos(destination.getLatitude());
-        double x = Math.cos(location.getLatitude()) * Math.sin(destination.getLatitude()) - Math.sin(location.)
-    }*/
-
-
     public void onResume(){
         super.onResume();
+        myLocationNewOverlay.enableFollowLocation();
+        myLocationNewOverlay.enableMyLocation();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -285,6 +301,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     public void onPause(){
         super.onPause();
+        myLocationNewOverlay.disableFollowLocation();
+        myLocationNewOverlay.disableMyLocation();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
