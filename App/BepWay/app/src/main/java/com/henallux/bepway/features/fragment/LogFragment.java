@@ -22,6 +22,7 @@ import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.TokenDAO;
 import com.henallux.bepway.features.activities.MainActivity;
+import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.model.LoginModel;
 import com.henallux.bepway.model.Token;
 
@@ -53,7 +54,7 @@ public class LogFragment extends Fragment {
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isWifiConnected() || is3GConnected()){
+                if(CheckConnection.isWifiConnected(getActivity().getApplicationContext()) || CheckConnection.is3GConnected(getActivity().getApplicationContext())){
                     getToken = new GetToken();
                     loginModel = new LoginModel(username.getText().toString().trim(), password.getText().toString().trim());
                     getToken.execute(loginModel);
@@ -75,18 +76,6 @@ public class LogFragment extends Fragment {
         //endregion
 
         return view;
-    }
-
-    private boolean isWifiConnected(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return networkInfo.isConnected();
-    }
-
-    private boolean is3GConnected(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return networkInfo.isConnected();
     }
 
     public class GetToken extends AsyncTask<LoginModel, Void, Token> {

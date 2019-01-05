@@ -41,4 +41,5 @@ dependencies {
     def BUTTER_KNIFE_VERSION = "8.5.1"
     implementation "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
+    implementation 'com.github.karanchuri:PermissionManager:0.1.0'
 }

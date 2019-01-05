@@ -227,30 +227,6 @@ public class CompaniesActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    public void filterCompanies(String newText){
-        searchedCompanies.clear();
-        for(Company company : allCompanies){
-            if(nameFilter.isChecked()) {
-                if(company.getName().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
-            }
-            else {
-                if(sectorFilter.isChecked()){
-                    if(company.getSector().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
-                }
-                else {
-                    if (addressFilter.isChecked()) {
-                        if(company.getAddress() != null && company.getAddress().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
-                    } else {
-                        if(company.getName().toLowerCase().contains(newText.toLowerCase()) || company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getAddress().toLowerCase().contains(newText.toLowerCase()))
-                            searchedCompanies.add(company);
-                    }
-                }
-            }
-        }
-        adapter.setCompanies(searchedCompanies);
-        companiesToDisplay.setAdapter(adapter);
-    }
-
     public void showFilterPopup(){
         TextView textClose = dialogFilter.findViewById(R.id.close_filterPopup);
         textClose.setOnClickListener(new View.OnClickListener() {

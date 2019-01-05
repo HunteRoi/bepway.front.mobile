@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.henallux.bepway.R;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
+import com.karan.churi.PermissionManager.PermissionManager;
 
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -67,48 +68,29 @@ import java.util.List;
 
 public class OSMActivity extends AppCompatActivity implements MapEventsReceiver {
 
+    private final double ZOOM_COMPANY = 19.0;
+    private final double ZOOM_ZONING =  16.0;
+    private final double ZOOM_ROUTING = 20.0;
+    private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
+    private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
+    private final int MY_PERMISSIONS_REQUEST_WRITE_DATA = 2;
     private MapView map = null;
-    private RoadManager roadManager;
     private IMapController mapController;
     private Road road;
-    private RoadTask roadTask;
     private Dialog dialog;
     private MyLocationNewOverlay myLocationNewOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
     private ImageButton getMyLocation;
     private ImageButton centerMap;
-    private LocationManager manager;
-    private LocationListener listener;
+    private PermissionManager permissionManager;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_osm);
 
-        myLocationNewOverlay.
-
-        if(Build.VERSION.SDK_INT < 23){
-            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-        }
-        else{
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-                return;
-            }else {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            }
-        }
-
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.zoning_popup);
-        //handle permissions first, before map is created. not depicted here
-        //load/initialize the osmdroid configuration, this can be done
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //setting this before the layout is inflated is a good idea
-        //it 'should' ensure that the map has a writable location for the map cache, even without permissions
-        //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
-        //see also StorageUtils
-        //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's tile servers will get you banned based on this string
+
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -120,12 +102,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         map.getOverlays().add(gestureOverlay);
 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(0, mapEventsOverlay);
+        map.getOverlays().add(mapEventsOverlay);
 
         myLocationNewOverlay = new MyLocationNewOverlay(map);
 
-        myLocationNewOverlay.enableMyLocation();
-        map.getOverlays().add(myLocationNewOverlay);
+        checkPermissions();
+        /*myLocationNewOverlay.enableMyLocation();
+        map.getOverlays().add(myLocationNewOverlay);*/
 
         mapController = map.getController();
 
@@ -133,14 +116,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-        //myLocationNewOverlay.
-
-
         getMyLocation = findViewById(R.id.ic_follow_me);
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(!myLocationNewOverlay.isFollowLocationEnabled()){
+               if(!myLocationNewOverlay.isMyLocationEnabled()){
                    centerMap.performClick();
                    getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
                }
@@ -174,22 +154,29 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                RoadTask task = new RoadTask();
-                ArrayList<GeoPoint> waypoints = new ArrayList<>();
-                waypoints.add(myLocationNewOverlay.getMyLocation());
-                waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
-                mapController.setCenter(myLocationNewOverlay.getMyLocation());
-                map.getOverlays().remove(mOverlayMarkers);
-                myLocationNewOverlay.enableFollowLocation();
-                mapController.setZoom(20.0);
-                task.execute(waypoints);
+                //checkPermissions();
+                if (ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    myLocationNewOverlay.enableMyLocation();
+                    map.getOverlays().add(myLocationNewOverlay);
+                    RoadTask task = new RoadTask();
+                    ArrayList<GeoPoint> waypoints = new ArrayList<>();
+                    waypoints.add(myLocationNewOverlay.getMyLocation());
+                    waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
+                    mapController.setCenter(myLocationNewOverlay.getMyLocation());
+                    map.getOverlays().remove(mOverlayMarkers);
+                    mapController.setZoom(ZOOM_ROUTING);
+                    task.execute(waypoints);
+
+                }
                 return false;
             }
         };
 
         if(getIntent().getSerializableExtra("center") != null){
-            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(16.0);
-            else mapController.setZoom(19.0);
+            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
+            else mapController.setZoom(ZOOM_COMPANY);
         }
 
         if(getIntent().getSerializableExtra("center") != null) {
@@ -242,6 +229,49 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     }
 
+    public void checkPermissions(){
+        //StringBuilder message = new StringBuilder();
+        if (ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(OSMActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(OSMActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(OSMActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_WRITE_DATA);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {

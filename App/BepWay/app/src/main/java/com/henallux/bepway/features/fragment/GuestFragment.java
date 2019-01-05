@@ -18,6 +18,7 @@ import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.TokenDAO;
 import com.henallux.bepway.features.activities.MainActivity;
+import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.model.LoginModel;
 import com.henallux.bepway.model.Token;
 
@@ -38,8 +39,13 @@ public class GuestFragment extends Fragment {
         loginGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetToken getToken = new GetToken();
-                getToken.execute(GUEST_ACCOUNT);
+                if(CheckConnection.isWifiConnected(getActivity().getApplicationContext()) || CheckConnection.is3GConnected(getActivity().getApplicationContext())){
+                    GetToken getToken = new GetToken();
+                    getToken.execute(GUEST_ACCOUNT);
+                }
+                else{
+                    Toast.makeText(getActivity(), getString(R.string.no_connection_error), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
