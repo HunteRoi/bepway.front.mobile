@@ -21,7 +21,6 @@ import android.view.View;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.ZoningDAO;
-import com.henallux.bepway.features.map.SurfaceMap;
 import com.henallux.bepway.model.Coordinate;
 import com.henallux.bepway.model.Zoning;
 
@@ -34,7 +33,6 @@ public class MapActivity extends AppCompatActivity {
     private ArrayList<Zoning>allZonings;
     private ArrayList<PointF> points;
     private LocationManager manager;
-    private SurfaceMap surfaceMap;
     private LocationListener listener;
 
     @Override
@@ -42,7 +40,6 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        surfaceMap = (SurfaceMap) findViewById(R.id.surfaceMap);
 
 
         allZonings = new ArrayList<>();

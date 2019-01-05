@@ -29,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -144,8 +145,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
-        Coordinate center = new Coordinate();
-
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> itemListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
@@ -168,7 +167,9 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                     map.getOverlays().remove(mOverlayMarkers);
                     mapController.setZoom(ZOOM_ROUTING);
                     task.execute(waypoints);
-
+                }
+                else{
+                    Toast.makeText(OSMActivity.this, getString(R.string.location_permission_required), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -179,6 +180,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             else mapController.setZoom(ZOOM_COMPANY);
         }
 
+        Coordinate center;
         if(getIntent().getSerializableExtra("center") != null) {
             //Get zoning center + its companies and put marker on them
             center = (Coordinate) getIntent().getSerializableExtra("center");
@@ -188,12 +190,12 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
         ArrayList<Company> companies = new ArrayList<>();
 
-        if(getIntent().getSerializableExtra("companies") != null){
+        if(getIntent().getSerializableExtra("companies") != null) {
             companies = (ArrayList<Company>) getIntent().getSerializableExtra("companies");
             //Drawable markerCompany = this.getResources().getDrawable(R.drawable.ic_place_map, null);
             ArrayList<OverlayItem> items = new ArrayList<>();
-            for(Company company : companies){
-                OverlayItem item = new OverlayItem(company.getName(), company.getSector(), new GeoPoint(company.getLocation().getLatitude(),company.getLocation().getLongitude()));
+            for (Company company : companies) {
+                OverlayItem item = new OverlayItem(company.getName(), company.getSector(), new GeoPoint(company.getLocation().getLatitude(), company.getLocation().getLongitude()));
                 items.add(item);
             }
 
@@ -201,32 +203,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             mOverlayMarkers.setFocusItemsOnTap(true);
             map.getOverlays().add(mOverlayMarkers);
         }
-
-
-        //items.add(new OverlayItem("Zoning de ciney", "c un pt randon", new GeoPoint(50.309,5.108)));
-
-
-        /*ArrayList<GeoPoint> waypoints = new ArrayList<>();
-        waypoints.add(startPoint);
-        GeoPoint endPoint = new GeoPoint(50.30925, 5.10866);
-        waypoints.add(endPoint);*/
-        //roadTask = new RoadTask();
-        //roadTask.execute(waypoints);
-
-        //map.getOverlayManager().add(mOverlay);
-
-
-        /*RoadManager roadManager = new OSRMRoadManager(this);
-        ArrayList<GeoPoint> waypoints = new ArrayList<>();
-        waypoints.add(startPoint);
-        GeoPoint endPoint = new GeoPoint(50.308, 5.108);
-        waypoints.add(endPoint);
-        Road road = roadManager.getRoad(waypoints);
-        Polyline roadOverlay = roadManager.buildRoadOverlay(road);*/
-
-        //map.getOverlays().add(roadOverlay);
-        //map.invalidate();
-
     }
 
     public void checkPermissions(){
@@ -242,12 +218,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             ActivityCompat.requestPermissions(OSMActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
-        }
-        if (ContextCompat.checkSelfPermission(OSMActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(OSMActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_WRITE_DATA);
         }
     }
 
