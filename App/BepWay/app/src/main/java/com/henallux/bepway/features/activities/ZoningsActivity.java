@@ -201,7 +201,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
-                companies = companyDAO.getCompaniesByZoning(token, params[0].getId(),0, params[0].getNbImplantations());
+                companies = companyDAO.getCompaniesByZoning(token, params[0].getId(),0, params[0].getNbImplantations(), null, null);
             } catch (Exception e) {
                 Toast.makeText(ZoningsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -127,6 +127,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                }
             }
         });
+
         centerMap = findViewById(R.id.ic_center_map);
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +153,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
                 mapController.setCenter(myLocationNewOverlay.getMyLocation());
                 //mOverlayMarkers.removeAllItems();
                 myLocationNewOverlay.enableFollowLocation();
+                mapController.setZoom(20.0);
                 task.execute(waypoints);
                 return false;
             }
@@ -213,20 +215,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     }
 
-    public void showPopup(){
-        TextView textClose = dialog.findViewById(R.id.close_popup_zoning);
-        TextView superficie = dialog.findViewById(R.id.superficieZoning);
-        TextView nbImplantations = dialog.findViewById(R.id.implentationsZoning);
-        TextView nomZoning = dialog.findViewById(R.id.zoningTitle);
-        TextView localite = dialog.findViewById(R.id.localiteZoning);
-        TextView commune = dialog.findViewById(R.id.communeZoning);
-        ImageView companies = dialog.findViewById(R.id.listCompaniesPopup);
-        ImageView website = dialog.findViewById(R.id.webZoning);
-        ImageView map = dialog.findViewById(R.id.mapViewZoning);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-    }
-
     @Override
     public boolean singleTapConfirmedHelper(GeoPoint p) {
         InfoWindow.closeAllInfoWindowsOn(map);
@@ -249,8 +237,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         protected void onPostExecute(Road result) {
             road = result;
             // showing distance and duration of the road
-            Toast.makeText(OSMActivity.this, "distance="+road.mLength, Toast.LENGTH_LONG).show();
-            Toast.makeText(OSMActivity.this, "durée="+road.mDuration, Toast.LENGTH_LONG).show();
+            //Toast.makeText(OSMActivity.this, "distance="+road.mLength, Toast.LENGTH_LONG).show();
+            //Toast.makeText(OSMActivity.this, "durée="+road.mDuration, Toast.LENGTH_LONG).show();
 
             if(road.mStatus != Road.STATUS_OK)
                 Toast.makeText(OSMActivity.this, "Error when loading the road - status="+road.mStatus, Toast.LENGTH_SHORT).show();

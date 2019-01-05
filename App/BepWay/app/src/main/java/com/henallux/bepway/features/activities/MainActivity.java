@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intentMap);
                                 break;
                             case R.id.nav_research :
+                                Intent intentCompanies = new Intent(MainActivity.this, CompaniesActivity.class);
+                                startActivity(intentCompanies);
                                 break;
                             case R.id.nav_disconnect:
                                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext().getApplicationContext())

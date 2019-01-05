@@ -38,6 +38,7 @@ import java.util.Comparator;
 
 public class CompaniesActivity extends AppCompatActivity {
 
+    private final int ZONING_ID_MISSING = -1;
     private RecyclerView companiesToDisplay;
     private AllCompaniesAdapter adapter;
     private LoadCompanies loadCompanies;
@@ -47,17 +48,25 @@ public class CompaniesActivity extends AppCompatActivity {
     private Dialog dialogFilter;
     private CheckBox nameFilter;
     private CheckBox sectorFilter;
-    private CheckBox cityFilter;
+    private CheckBox addressFilter;
     private Button filterValidation;
     private SearchView searchView;
     private int pageNumber;
     private int zoningId;
+    private String filterKey;
+    private String filterValue;
+    private String lastFilterValue;
+    private boolean firstResearchDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_companies);
 
+        firstResearchDone = false;
+        filterKey = "companyName";
+        filterValue = null;
+        lastFilterValue = null;
         pageNumber = 0;
         searchedCompanies = new ArrayList<>();
         companiesToDisplay = findViewById(R.id.recyclerView);
@@ -104,52 +113,51 @@ public class CompaniesActivity extends AppCompatActivity {
             }*/
         });
 
-        zoningId = getIntent().getIntExtra("zoningId", -5);
+        zoningId = getIntent().getIntExtra("zoningId", ZONING_ID_MISSING);
 
         dialogFilter = new Dialog(this);
-        if(zoningId == -5) dialogFilter.setContentView(R.layout.filter_all_companies_popup);
+        if(zoningId == ZONING_ID_MISSING) dialogFilter.setContentView(R.layout.filter_all_companies_popup);
         else dialogFilter.setContentView(R.layout.filter_popup);
 
 
         nameFilter = dialogFilter.findViewById(R.id.checkName);
         sectorFilter = dialogFilter.findViewById(R.id.checkSector);
-        cityFilter = dialogFilter.findViewById(R.id.checkCity);
+        addressFilter = dialogFilter.findViewById(R.id.checkCity);
         filterValidation = dialogFilter.findViewById(R.id.filterButton);
 
         nameFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(nameFilter.isChecked()){
-                    if(sectorFilter.isChecked())sectorFilter.setChecked(false);
-                    if(cityFilter.isChecked())cityFilter.setChecked(false);
-                }
+                uncheckEverythingAndResetPageNumber();
+                nameFilter.setChecked(true);
+                filterKey = "companyName";
             }
         });
 
         sectorFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sectorFilter.isChecked()){
-                    if(nameFilter.isChecked())nameFilter.setChecked(false);
-                    if(cityFilter.isChecked())cityFilter.setChecked(false);
-                }
+                uncheckEverythingAndResetPageNumber();
+                sectorFilter.setChecked(true);
+                filterKey = "activityName";
             }
         });
 
-        cityFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cityFilter.isChecked()){
-                    if(nameFilter.isChecked())nameFilter.setChecked(false);
-                    if(sectorFilter.isChecked())sectorFilter.setChecked(false);
+        if(zoningId == ZONING_ID_MISSING){
+            addressFilter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    uncheckEverythingAndResetPageNumber();
+                    addressFilter.setChecked(true);
+                    filterKey = "address";
                 }
-            }
-        });
+            });
+        }
 
         filterValidation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterCompanies(searchView.getQuery().toString());
+                //filterCompanies(searchView.getQuery().toString());
                 dialogFilter.dismiss();
             }
         });
@@ -164,6 +172,13 @@ public class CompaniesActivity extends AppCompatActivity {
 
         loadCompanies = new LoadCompanies();
         loadCompanies.execute();
+    }
+
+    public void uncheckEverythingAndResetPageNumber(){
+        pageNumber = 0;
+        nameFilter.setChecked(false);
+        sectorFilter.setChecked(false);
+        if(zoningId == ZONING_ID_MISSING) addressFilter.setChecked(false);
     }
 
 
@@ -189,12 +204,23 @@ public class CompaniesActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if(!firstResearchDone){
+                    firstResearchDone = true;
+                    pageNumber = 0;
+                }
+                lastFilterValue = filterValue;
+                filterValue = query;
+                if(!filterValue.equals(lastFilterValue)) pageNumber = 0;
+                allCompanies = new ArrayList<>();
+                searchedCompanies = new ArrayList<>();
+                LoadCompanies loadCompanies = new LoadCompanies();
+                loadCompanies.execute();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterCompanies(newText);
+                //filterCompanies(newText);
                 return false;
             }
         });
@@ -212,7 +238,7 @@ public class CompaniesActivity extends AppCompatActivity {
                     if(company.getSector().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
                 }
                 else {
-                    if (cityFilter.isChecked()) {
+                    if (addressFilter.isChecked()) {
                         if(company.getAddress() != null && company.getAddress().toLowerCase().contains(newText.toLowerCase())) searchedCompanies.add(company);
                     } else {
                         if(company.getName().toLowerCase().contains(newText.toLowerCase()) || company.getSector().toLowerCase().contains(newText.toLowerCase()) || company.getAddress().toLowerCase().contains(newText.toLowerCase()))
@@ -271,7 +297,8 @@ public class CompaniesActivity extends AppCompatActivity {
         else{
             dialogCompanyInfo.setContentView(R.layout.company_popup);
         }
-        TextView textClose = (TextView) dialogCompanyInfo.findViewById(R.id.close_popup_company);
+
+        TextView textClose = dialogCompanyInfo.findViewById(R.id.close_popup_company);
         TextView companyName = dialogCompanyInfo.findViewById(R.id.companyName);
         ImageView map = dialogCompanyInfo.findViewById(R.id.companyMap);
         companyName.setText(company.getName());
@@ -314,11 +341,11 @@ public class CompaniesActivity extends AppCompatActivity {
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(CompaniesActivity.this).getString("Token",null);
 
-                if(zoningId != -5) {
-                    companies = companyDAO.getCompaniesByZoning(token, zoningId, pageNumber);
+                if(zoningId == ZONING_ID_MISSING) {
+                    companies = companyDAO.getAllCompanies(token, pageNumber,filterKey,filterValue);
                 }
                 else{
-                    companies = companyDAO.getAllCompanies(token, pageNumber);
+                    companies = companyDAO.getCompaniesByZoning(token, zoningId, pageNumber, filterKey, filterValue);
                 }
                 pageNumber++;
             } catch (Exception e) {
@@ -337,6 +364,7 @@ public class CompaniesActivity extends AppCompatActivity {
                 }
             });
             searchedCompanies.addAll(companies);
+            adapter.setCompanies(searchedCompanies);
             companiesToDisplay.setAdapter(adapter);
         }
 

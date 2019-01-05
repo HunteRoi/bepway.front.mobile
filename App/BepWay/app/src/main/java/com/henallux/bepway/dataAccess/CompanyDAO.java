@@ -5,7 +5,6 @@ import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,8 +13,14 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class CompanyDAO {
-    public ArrayList<Company> getAllCompanies(String token, int pageIndex) throws Exception{
-        URL url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d",pageIndex));
+
+    private final int DEFAULT_PAGE_SIZE = 15;
+
+    public ArrayList<Company> getAllCompanies(String token, int pageIndex, String filterKey, String filterValue) throws Exception{
+        URL url;
+        if(filterKey == null || filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d",pageIndex));
+        else url =new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d&%s=%s",pageIndex,filterKey, filterValue));
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("GET");
@@ -38,8 +43,10 @@ public class CompanyDAO {
         return getAllCompanies(token, pageIndex);
     }*/
 
-    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, int pageSize) throws Exception{
-        URL url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
+    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, int pageSize, String filterKey, String filterValue) throws Exception{
+        URL url;
+        if(filterKey == null | filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
+        else url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d&%s=%s",zoningId, pageIndex, pageSize,filterKey,filterValue));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("GET");
@@ -60,8 +67,8 @@ public class CompanyDAO {
         return jsonToCompanies(stringJSON);
     }
 
-    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex) throws Exception{
-        return getCompaniesByZoning(token, zoningId, pageIndex, 15);
+    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, String filterKey, String filterValue) throws Exception{
+        return getCompaniesByZoning(token, zoningId, pageIndex, DEFAULT_PAGE_SIZE, filterKey, filterValue);
     }
 
     public ArrayList<Company>jsonToCompanies(String stringJSON) throws Exception{
