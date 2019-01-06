@@ -86,31 +86,10 @@ public class CompaniesActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(CompaniesActivity.this, "Last", Toast.LENGTH_LONG).show();
                     LoadCompanies addCompanies = new LoadCompanies();
                     addCompanies.execute();
                 }
             }
-            /*@Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScrolling = true;
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                currentItems = layoutManager.getChildCount();
-                totalItems = layoutManager.getItemCount();
-                scrollOutItems = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-
-                if(isScrolling && (currentItems + scrollOutItems == totalItems)){
-                    isScrolling = false;
-                    //loadCompanies.execute();
-                }
-            }*/
         });
 
         zoningId = getIntent().getIntExtra("zoningId", ZONING_ID_MISSING);

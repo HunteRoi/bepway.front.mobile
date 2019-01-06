@@ -59,4 +59,5 @@
     <string name="write_permission_required">Vous devez donner l\'accès à vos données</string>
     <string name="error_loading_road">Erreur lors du chargement de la route - statut :</string>
     <string name="step">Étape</string>
+    <string name="go_to">Aller vers</string>
 </resources>

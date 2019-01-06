@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,11 +40,22 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
     private ArrayList<Zoning> allZonings;
     private ArrayList<Zoning> searchedZonings;
     private Dialog dialog;
+    private int pageNumber;
+    private boolean firstResearchDone;
+    private String filterKey;
+    private String filterValue;
+    private String lastFilterValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_zonings);
+
+        pageNumber = 0;
+        firstResearchDone = false;
+        filterValue = null;
+        lastFilterValue = null;
+        searchedZonings = new ArrayList<>();
 
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.zoning_popup);
@@ -55,9 +67,21 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 showPopup(searchedZonings.get(position));
             }
         }));
+        zoningsToDisplay.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    LoadZonings addZonig = new LoadZonings();
+                    addZonig.execute();
+                }
+            }
+        });
 
 
         allZonings = new ArrayList<>();
+        adapter = new AllZoningsAdapter(allZonings);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
@@ -81,6 +105,18 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if(!firstResearchDone){
+                    firstResearchDone = true;
+                    filterKey = "zoningName";
+                    pageNumber = 0;
+                }
+                lastFilterValue = filterValue;
+                filterValue = query;
+                if(!filterValue.equals(lastFilterValue)) pageNumber = 0;
+                allZonings = new ArrayList<>();
+                searchedZonings = new ArrayList<>();
+                LoadZonings loadZonings = new LoadZonings();
+                loadZonings.execute();
                 return false;
             }
 
@@ -166,9 +202,10 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
-                zonings = zoningDAO.getAllZoningsAPI(token);
+                zonings = zoningDAO.getAllZoningsAPI(token, pageNumber, filterKey, filterValue);
+                pageNumber++;
             } catch (Exception e) {
-                Log.i("Zoning", e.getMessage());
+                Log.i("fzqefze", e.getMessage());
             }
             return zonings;
         }
@@ -178,8 +215,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             for(Zoning zoning : zonings){
                 allZonings.add(zoning);
             }
-            searchedZonings = (ArrayList<Zoning>)allZonings.clone();
-            adapter = new AllZoningsAdapter(allZonings);
+            searchedZonings.addAll(zonings);
+            adapter.setZonings(searchedZonings);
             zoningsToDisplay.setAdapter(adapter);
         }
 

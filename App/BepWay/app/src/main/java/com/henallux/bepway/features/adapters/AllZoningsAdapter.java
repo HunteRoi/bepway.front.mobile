@@ -14,9 +14,7 @@ import java.util.ArrayList;
 public class AllZoningsAdapter extends RecyclerView.Adapter<AllZoningsAdapter.MyViewHolder>{
     private ArrayList<Zoning> zonings;
 
-    public void setZonings(ArrayList<Zoning> zonings){
-        this.zonings = zonings;
-    }
+
 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -32,6 +30,11 @@ public class AllZoningsAdapter extends RecyclerView.Adapter<AllZoningsAdapter.My
     // Provide a suitable constructor (depends on the kind of dataset)
     public AllZoningsAdapter(ArrayList<Zoning> zonings){
         this.zonings = zonings;
+    }
+
+    public void setZonings(ArrayList<Zoning> zonings){
+        this.zonings = zonings;
+        this.notifyDataSetChanged();
     }
 
     // Create new views (invoked by the layout manager)

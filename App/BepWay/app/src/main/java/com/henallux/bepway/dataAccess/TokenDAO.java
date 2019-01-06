@@ -17,7 +17,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class TokenDAO {
+public class TokenDAO implements ITokenDAO{
 
 
     public Token getToken(LoginModel login)throws TokenException, Exception {

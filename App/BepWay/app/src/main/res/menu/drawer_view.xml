@@ -6,10 +6,6 @@
             android:title="@string/listItem"
             android:icon="@drawable/ic_list" />
         <item
-            android:id="@+id/nav_map"
-            android:title="@string/mapItem"
-            android:icon="@drawable/ic_map"/>
-        <item
             android:id="@+id/nav_research"
             android:title="@string/researchItem"
             android:icon="@drawable/ic_search"/>

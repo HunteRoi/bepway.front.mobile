@@ -1,13 +1,8 @@
 package com.henallux.bepway.dataAccess;
 
-import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.henallux.bepway.Exception.ApiErrorException;
 import com.henallux.bepway.model.Coordinate;
-import com.henallux.bepway.model.Token;
 import com.henallux.bepway.model.Zoning;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,10 +14,15 @@ import java.util.ArrayList;
 
 public class ZoningDAO {
 
-    public ArrayList<Zoning> getAllZoningsAPI(String token) throws ApiErrorException, Exception{
-        //URL url = new URL("https://data.bep.be/api/records/1.0/search/?dataset=parcs-dactivite-economique&facet=bep_services_dbo_gestparc_pae_equipements_hallrelais&facet=bep_services_dbo_gestparc_pae_equipements_gaz&facet=bep_services_dbo_gestparc_pae_equipements_fibreoptique&facet=bep_services_dbo_gestparc_pae_equipements_adsl&facet=bep_services_dbo_gestparc_pae_equipements_coaxial&facet=bep_services_dbo_gestparc_pae_equipements_assainissementcollectif&facet=bep_services_dbo_gestparc_pae_caracteristiques_type&facet=bep_services_dbo_gestparc_pae_caracteristiques_localisation&facet=bep_services_dbo_gestparc_pae_caracteristiques_commune&facet=bep_services_dbo_gestparc_pae_caracteristiques_prixvente");
-        URL url = new URL("https://bepway.azurewebsites.net/api/Zoning");
+    public ArrayList<Zoning> getAllZoningsAPI(String token, int pageIndex, String filterKey, String filterValue) throws ApiErrorException, Exception{
+        URL url;
+        if(filterKey == null || filterValue == null)url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d", pageIndex));
+        else url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d&%s=%s", pageIndex, filterKey, filterValue));
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        int test = connection.getResponseCode();
+        int test2 = HttpURLConnection.HTTP_INTERNAL_ERROR;
 
         //if(connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) throw new ApiErrorException("Error coming from the API");
 
@@ -63,6 +63,4 @@ public class ZoningDAO {
         } catch (Exception ex) {Log.i("Errors", ex.getClass() +" - "+ ex.getMessage());}
         return zonings;
     }
-
-
 }

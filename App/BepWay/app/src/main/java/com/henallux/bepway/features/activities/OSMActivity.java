@@ -12,6 +12,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.henallux.bepway.R;
+import com.henallux.bepway.features.map.MyOwnItemizedOverlay;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
 
@@ -58,7 +60,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private IMapController mapController;
     private Road road;
     private MyLocationNewOverlay myLocationNewOverlay;
-    private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
+    private MyOwnItemizedOverlay mOverlayMarkers;
     @BindView(R.id.ic_follow_me) public /*private*/ ImageButton getMyLocation;
     @BindView(R.id.ic_center_map) public /*private*/ ImageButton centerMap;
 
@@ -161,20 +163,21 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
         if(getIntent().getSerializableExtra("companies") != null) {
             companies = (ArrayList<Company>) getIntent().getSerializableExtra("companies");
-            //Drawable markerCompany = this.getResources().getDrawable(R.drawable.ic_place_map, null);
+            Drawable markerCompany = this.getResources().getDrawable(R.drawable.ic_place_map, null);
             ArrayList<OverlayItem> items = new ArrayList<>();
             for (Company company : companies) {
                 OverlayItem item = new OverlayItem(company.getName(), company.getSector(), new GeoPoint(company.getLocation().getLatitude(), company.getLocation().getLongitude()));
+                item.setMarker(markerCompany);
                 items.add(item);
             }
 
-            mOverlayMarkers = new ItemizedOverlayWithFocus<>(getApplicationContext(), items, itemListener);
-            mOverlayMarkers.setFocusItemsOnTap(true);
+            mOverlayMarkers = new MyOwnItemizedOverlay(getApplicationContext(), items, itemListener, companies, OSMActivity.this);
+            //mOverlayMarkers.setFocusItemsOnTap(true);
             map.getOverlays().add(mOverlayMarkers);
         }
     }
 
-    private void drawRouteAndRecenterMapView(OverlayItem item) {
+    public void drawRouteAndRecenterMapView(OverlayItem item) {
         if (hasPermissionToTrackUser()) {
             if (!myLocationNewOverlay.isMyLocationEnabled()) myLocationNewOverlay.enableMyLocation();
 
