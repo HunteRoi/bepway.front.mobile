@@ -53,13 +53,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final double ZOOM_ROUTING = 20.0;
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
     private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
-    @BindView(R.id.map) private MapView map = null;
+    @BindView(R.id.map) public MapView map = null;
     private IMapController mapController;
     private Road road;
     private MyLocationNewOverlay myLocationNewOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
-    @BindView(R.id.ic_follow_me) private ImageButton getMyLocation;
-    @BindView(R.id.ic_center_map) private ImageButton centerMap;
+    @BindView(R.id.ic_follow_me) public ImageButton getMyLocation;
+    @BindView(R.id.ic_center_map) public ImageButton centerMap;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

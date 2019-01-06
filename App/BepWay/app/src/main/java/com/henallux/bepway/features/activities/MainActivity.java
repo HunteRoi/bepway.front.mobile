@@ -40,21 +40,17 @@ public class MainActivity extends AppCompatActivity {
                                 Intent intentList = new Intent(MainActivity.this, ZoningsActivity.class);
                                 startActivity(intentList);
                                 break;
-                            case R.id.nav_map :
-                                Intent intentMap = new Intent(MainActivity.this, OSMActivity.class);
-                                startActivity(intentMap);
-                                break;
                             case R.id.nav_research :
                                 Intent intentCompanies = new Intent(MainActivity.this, CompaniesActivity.class);
                                 startActivity(intentCompanies);
                                 break;
                             case R.id.nav_disconnect:
                                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext().getApplicationContext())
-                                .edit()
-                                .remove("Token")
-                                .remove("Login")
-                                .remove("Password")
-                                .apply();
+                                    .edit()
+                                    .remove("Token")
+                                    .remove("Login")
+                                    .remove("Password")
+                                    .apply();
                                 Intent intentDisconnect = new Intent(MainActivity.this, LoginActivity.class);
                                 startActivity(intentDisconnect);
                                 break;

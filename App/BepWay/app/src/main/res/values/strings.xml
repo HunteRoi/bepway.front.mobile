@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">BepWay</string>
+    <string name="start_task_main_button">Start task</string>
     <string name="person_information_main">Informations personnelles</string>
+    <string name="textView">TextView</string>
     <string name="listItem">Nos zonings</string>
+    <string name="mapItem">Carte</string>
     <string name="openDrawer">Open the drawer</string>
     <string name="closeDrawer">Close the drawer</string>
     <string name="my_header_title">Menu</string>
