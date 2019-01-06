@@ -64,7 +64,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     @BindView(R.id.map) public  MapView map = null;
     @BindView(R.id.ic_follow_me) public ImageButton getMyLocation;
     @BindView(R.id.ic_center_map) public ImageButton centerMap;
-    @BindView(R.id.ic_go_to_center) public ImageButton goToCenter;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +115,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             mapController.zoomTo(ZOOM_ROUTING);
             // possible adds here to change camera angle on map so it's axed with designed route
             //myLocationNewOverlay.enableFollowLocation();
+                myLocationNewOverlay.disableFollowLocation();
             }
         });
 
@@ -137,17 +137,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
-        goToCenter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(getIntent().getSerializableExtra("center") != null){
-                    if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
-                    else mapController.setZoom(ZOOM_COMPANY);
-                }
-                mapController.setCenter(mapCenter);
-            }
-        });
-
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> itemListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
@@ -165,7 +154,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         };
 
-        goToCenter.performClick();
+        if(getIntent().getSerializableExtra("center") != null){
+            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
+            else mapController.setZoom(ZOOM_COMPANY);
+        }
+        mapController.setCenter(mapCenter);
 
         Coordinate center;
         if(getIntent().getSerializableExtra("center") != null) {
