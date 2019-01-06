@@ -70,36 +70,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         setContentView(R.layout.activity_osm);
         ButterKnife.bind(this);
 
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
-        map.setTileSource(TileSourceFactory.MAPNIK);
-
-        map.setZoomRounding(true);
-        map.setMultiTouchControls(true);
-
-        RotationGestureOverlay gestureOverlay = new RotationGestureOverlay(map);
-        gestureOverlay.setEnabled(true);
-        map.getOverlays().add(gestureOverlay);
-
-        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        map.getOverlays().add(mapEventsOverlay);
-
-        myLocationNewOverlay = new MyLocationNewOverlay(map);
-        //For fun remove this comment
-        //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
-
-        checkPermissions();
-        if (hasPermissionToTrackUser()) {
-            myLocationNewOverlay.enableMyLocation();
-            map.getOverlays().add(myLocationNewOverlay);
-        }
-        mapController = map.getController();
-
-        CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this),map);
-        compassOverlay.enableCompass();
-        map.getOverlays().add(compassOverlay);
-
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,20 +91,49 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Overlay> overlays = map.getOverlays();
-                if(!myLocationNewOverlay.isMyLocationEnabled()){
-                    if (!overlays.contains(myLocationNewOverlay) || !myLocationNewOverlay.isMyLocationEnabled()) {
-                        myLocationNewOverlay.enableMyLocation();
-                        overlays.add(myLocationNewOverlay);
-                    }
-                    getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
-                } else {
-                    myLocationNewOverlay.disableFollowLocation();
-                    myLocationNewOverlay.disableMyLocation();
-                    getMyLocation.setImageResource(R.drawable.ic_follow_me);
+            List<Overlay> overlays = map.getOverlays();
+            if(!myLocationNewOverlay.isMyLocationEnabled()){
+                if (!overlays.contains(myLocationNewOverlay) || !myLocationNewOverlay.isMyLocationEnabled()) {
+                    myLocationNewOverlay.enableMyLocation();
+                    overlays.add(myLocationNewOverlay);
                 }
+                getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
+            } else {
+                myLocationNewOverlay.disableFollowLocation();
+                myLocationNewOverlay.disableMyLocation();
+                getMyLocation.setImageResource(R.drawable.ic_follow_me);
+            }
             }
         });
+
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setZoomRounding(true);
+        map.setMultiTouchControls(true);
+
+        RotationGestureOverlay gestureOverlay = new RotationGestureOverlay(map);
+        gestureOverlay.setEnabled(true);
+        map.getOverlays().add(gestureOverlay);
+
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
+        map.getOverlays().add(mapEventsOverlay);
+
+        myLocationNewOverlay = new MyLocationNewOverlay(map);
+        //For fun remove this comment
+        //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
+
+        checkPermissions();
+        if (hasPermissionToTrackUser()) {
+            getMyLocation.performClick();
+        }
+        mapController = map.getController();
+
+        CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this),map);
+        compassOverlay.enableCompass();
+        map.getOverlays().add(compassOverlay);
 
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> itemListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
