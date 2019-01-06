@@ -12,7 +12,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ import com.henallux.bepway.model.Coordinate;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
@@ -117,7 +115,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             mapController.setCenter(myLocationNewOverlay.getMyLocation());
             mapController.zoomTo(ZOOM_ROUTING);
             // possible adds here to change camera angle on map so it's axed with designed route
-            myLocationNewOverlay.enableFollowLocation();
+            //myLocationNewOverlay.enableFollowLocation();
             }
         });
 

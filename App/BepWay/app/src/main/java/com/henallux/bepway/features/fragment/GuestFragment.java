@@ -74,7 +74,7 @@ public class GuestFragment extends Fragment {
                 token = tokenDAO.getToken(params[0]);
             }
             catch (TokenException e) {
-                token.setException(e.getErrorMessage());
+                token.setException(e.getMessage());
             }
             return token;
         }

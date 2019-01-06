@@ -210,6 +210,17 @@ public class CompaniesActivity extends AppCompatActivity {
                 return false;
             }
         });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                filterValue = null;
+                searchedCompanies = new ArrayList<>();
+                pageNumber = 0;
+                LoadCompanies loadCompanies = new LoadCompanies();
+                loadCompanies.execute();
+                return false;
+            }
+        });
         return super.onPrepareOptionsMenu(menu);
     }
 
