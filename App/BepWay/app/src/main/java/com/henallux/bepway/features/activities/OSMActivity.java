@@ -12,6 +12,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,6 +87,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         map.getOverlays().add(mapEventsOverlay);
 
         myLocationNewOverlay = new MyLocationNewOverlay(map);
+        //For fun remove this comment
+        //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
 
         checkPermissions();
         if (hasPermissionToTrackUser()) {
@@ -141,7 +144,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                drawRouteAndRecenterMapView(item);
+                //region Second surprise
+                Drawable markerCompany = getDrawable(R.drawable.ic_me);
+                //endregion
+                item.setMarker(markerCompany);
+                //drawRouteAndRecenterMapView(item);
                 return false;
             }
         };

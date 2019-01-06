@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +44,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
     private String filterKey;
     private String filterValue;
     private String lastFilterValue;
+    private int lastFirstVisiblePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +71,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if (!recyclerView.canScrollVertically(1)) {
+                    lastFirstVisiblePosition = ((LinearLayoutManager)zoningsToDisplay.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                     LoadZonings addZonig = new LoadZonings();
                     addZonig.execute();
                 }
@@ -218,6 +218,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             searchedZonings.addAll(zonings);
             adapter.setZonings(searchedZonings);
             zoningsToDisplay.setAdapter(adapter);
+            ((LinearLayoutManager) zoningsToDisplay.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
         }
 
         @Override
