@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,17 +25,17 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.CompanyDAO;
 import com.henallux.bepway.features.adapters.AllCompaniesAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
+import com.henallux.bepway.features.util.LoadImage;
 import com.henallux.bepway.model.Company;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class CompaniesActivity extends AppCompatActivity {
 
@@ -220,21 +221,18 @@ public class CompaniesActivity extends AppCompatActivity {
     }
 
     public void showInformationPopup(final Company company){
+        ImageView image;
         if(company.isPremium()){
             dialogCompanyInfo.setContentView(R.layout.premium_company_popup);
+            image = dialogCompanyInfo.findViewById(R.id.companyImage);
             TextView description = dialogCompanyInfo.findViewById(R.id.companyDescription);
-            ImageView image = dialogCompanyInfo.findViewById(R.id.companyImage);
             ImageView website = dialogCompanyInfo.findViewById(R.id.companyWebsite);
             description.setText(company.getDescription() == null? "" : company.getDescription());
             if(company.getImageUrl() != null){
-                try{
-                    URL url = new URL(company.getImageUrl());
-                    Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    image.setImageBitmap(bmp);
-                }
-                catch (Exception exception){
-                    Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                LoadImage loadImageURL = new LoadImage(getApplicationContext(),company.getImageUrl(), image);
+                loadImageURL.execute();
+            }else{
+                image.setImageDrawable(getDrawable(R.drawable.company_example));
             }
             website.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -253,6 +251,8 @@ public class CompaniesActivity extends AppCompatActivity {
         }
         else{
             dialogCompanyInfo.setContentView(R.layout.company_popup);
+            image = dialogCompanyInfo.findViewById(R.id.companyImage);
+            image.setImageDrawable(getDrawable(R.drawable.company_example));
         }
 
         TextView textClose = dialogCompanyInfo.findViewById(R.id.close_popup_company);
@@ -314,16 +314,16 @@ public class CompaniesActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Company> companies) {
             allCompanies.addAll(companies);
-            Collections.sort(searchedCompanies, new Comparator<Company>() {
+            searchedCompanies.addAll(companies);
+            /*Collections.sort(searchedCompanies, new Comparator<Company>() {
                 @Override
                 public int compare(Company o1, Company o2) {
                     return Boolean.compare(o1.isPremium(), o2.isPremium());
                 }
-            });
-            searchedCompanies.addAll(companies);
+            });*/
             adapter.setCompanies(searchedCompanies);
             companiesToDisplay.setAdapter(adapter);
-            ((LinearLayoutManager) companiesToDisplay.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
+            (companiesToDisplay.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
         }
 
         @Override
@@ -331,5 +331,42 @@ public class CompaniesActivity extends AppCompatActivity {
             super.onCancelled();
         }
     }
+
+    /*public class LoadImageURL extends AsyncTask<Void,Void,Bitmap>{
+        private String URL;
+        private ImageView image;
+        public LoadImageURL(String URL, ImageView image){
+            super();
+            this.URL = URL;
+            this.image = image;
+        }
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            Bitmap bitmap = null;
+            try{
+                InputStream in = new java.net.URL(URL).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            }
+            catch (MalformedURLException exception){
+
+            }
+            catch (IOException exception){
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.company_example);
+
+            }
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            image.setImageBitmap(bitmap);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }*/
 
 }

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.henallux.bepway.R;
 import com.henallux.bepway.features.map.MyOwnItemizedOverlay;
+import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
 
@@ -57,13 +58,15 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final double ZOOM_ROUTING = 20.0;
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
     private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
-    @BindView(R.id.map) public /*private*/ MapView map = null;
+    private GeoPoint mapCenter;
     private IMapController mapController;
     private Road road;
     private MyLocationNewOverlay myLocationNewOverlay;
     private MyOwnItemizedOverlay mOverlayMarkers;
+    @BindView(R.id.map) public /*private*/ MapView map = null;
     @BindView(R.id.ic_follow_me) public /*private*/ ImageButton getMyLocation;
     @BindView(R.id.ic_center_map) public /*private*/ ImageButton centerMap;
+    @BindView(R.id.ic_go_to_center) public ImageButton goToCenter;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +76,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        //map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         map.setZoomRounding(true);
@@ -87,6 +89,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         map.getOverlays().add(mapEventsOverlay);
 
         myLocationNewOverlay = new MyLocationNewOverlay(map);
+
         //For fun remove this comment
         //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
 
@@ -101,7 +104,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-        //centerMap = findViewById(R.id.ic_center_map);
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +121,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
-        //getMyLocation = findViewById(R.id.ic_follow_me);
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,11 +135,16 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
+        goToCenter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapController.setCenter(mapCenter);
+            }
+        });
+
         ItemizedIconOverlay.OnItemGestureListener<OverlayItem> itemListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                // soon : quick popup for company information + "goto" button
-                // with this --> on item long press will be factorized
                 return false;
             }
 
@@ -162,8 +168,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         if(getIntent().getSerializableExtra("center") != null) {
             //Get zoning center + its companies and put marker on them
             center = (Coordinate) getIntent().getSerializableExtra("center");
-            GeoPoint centerCoord = new GeoPoint(center.getLatitude(),center.getLongitude());
-            mapController.setCenter(centerCoord);
+            mapCenter = new GeoPoint(center.getLatitude(),center.getLongitude());
+            mapController.setCenter(mapCenter);
         }
 
         ArrayList<Company> companies = new ArrayList<>();
@@ -179,15 +185,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
 
             mOverlayMarkers = new MyOwnItemizedOverlay(getApplicationContext(), items, itemListener, companies, OSMActivity.this);
-            //mOverlayMarkers.setFocusItemsOnTap(true);
             map.getOverlays().add(mOverlayMarkers);
         }
     }
 
     public void drawRouteAndRecenterMapView(OverlayItem item) {
-        if (hasPermissionToTrackUser()) {
+        if (hasPermissionToTrackUser() && (CheckConnection.isWifiConnected(OSMActivity.this) || CheckConnection.is3GConnected(OSMActivity.this))) {
             if (!myLocationNewOverlay.isMyLocationEnabled()) myLocationNewOverlay.enableMyLocation();
-
             RoadTask task = new RoadTask();
             ArrayList<GeoPoint> waypoints = new ArrayList<>();
             waypoints.add(myLocationNewOverlay.getMyLocation());
@@ -197,7 +201,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
             centerMap.performClick();
         } else {
-            Toast.makeText(OSMActivity.this, R.string.location_permission_required, Toast.LENGTH_SHORT).show();
+            if(!hasPermissionToTrackUser()) Toast.makeText(OSMActivity.this, R.string.location_permission_required, Toast.LENGTH_SHORT).show();
+            else Toast.makeText(OSMActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -262,7 +267,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             myLocationNewOverlay.enableFollowLocation();
             map.getOverlays().add(roadOverlay);
             map.invalidate();
-            //updateUIWithRoad(result);
         }
     }
 

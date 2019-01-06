@@ -80,9 +80,9 @@ public class CompanyDAO implements ICompanyDAO{
                 if(!companyJson.isNull("activitySector"))sector = companyJson.getJSONObject("activitySector");
                 company.setId(companyJson.getInt("id"));
                 company.setName(companyJson.getString("name"));
-                company.setImageUrl(companyJson.getString("imageUrl"));
-                company.setSiteUrl(companyJson.getString("siteUrl"));
-                company.setDescription(companyJson.getString("description"));
+                company.setImageUrl(companyJson.getString("imageUrl").equals("null")? null : companyJson.getString("imageUrl"));
+                company.setSiteUrl(companyJson.getString("siteUrl").equals("null")? null : companyJson.getString("siteUrl"));
+                company.setDescription(companyJson.getString("description").equals("null")? null : companyJson.getString("description"));
                 company.setStatus(companyJson.getString("status"));
                 company.setAddress(companyJson.getString("address"));
                 company.setPremium(companyJson.getBoolean("isPremium"));

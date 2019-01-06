@@ -39,12 +39,11 @@
 
         <ImageView
             android:id="@+id/companyImage"
-            android:layout_width="101dp"
-            android:layout_height="101dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/company_example"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
