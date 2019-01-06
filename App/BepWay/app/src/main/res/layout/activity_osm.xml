@@ -55,7 +55,7 @@
         android:layout_marginTop="15dp"
         android:background="#00ffffff"
         android:cropToPadding="true"
-        android:src="@drawable/ic_place_map"
+        android:src="@drawable/ic_place_map_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_follow_me" />
 

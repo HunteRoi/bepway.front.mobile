@@ -106,6 +106,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            if(!myLocationNewOverlay.isMyLocationEnabled()) getMyLocation.performClick();
             List<Overlay> overlays = map.getOverlays();
 
             if (!overlays.contains(myLocationNewOverlay) || !myLocationNewOverlay.isMyLocationEnabled()) {
@@ -114,8 +115,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
 
             mapController.setCenter(myLocationNewOverlay.getMyLocation());
-            mapController.zoomTo(ZOOM_ROUTING); //mapController.setZoom(ZOOM_ROUTING);
-            // possible need of rework to change camera angle on map so it's axed with designed route
+            mapController.zoomTo(ZOOM_ROUTING);
+            // possible adds here to change camera angle on map so it's axed with designed route
             myLocationNewOverlay.enableFollowLocation();
             }
         });
@@ -125,7 +126,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             public void onClick(View v) {
                 List<Overlay> overlays = map.getOverlays();
                 if(!myLocationNewOverlay.isMyLocationEnabled()){
-                    //centerMap.performClick();
                     if (!overlays.contains(myLocationNewOverlay) || !myLocationNewOverlay.isMyLocationEnabled()) {
                         myLocationNewOverlay.enableMyLocation();
                         overlays.add(myLocationNewOverlay);
@@ -142,6 +142,10 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         goToCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(getIntent().getSerializableExtra("center") != null){
+                    if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
+                    else mapController.setZoom(ZOOM_COMPANY);
+                }
                 mapController.setCenter(mapCenter);
             }
         });
@@ -163,10 +167,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         };
 
-        if(getIntent().getSerializableExtra("center") != null){
-            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
-            else mapController.setZoom(ZOOM_COMPANY);
-        }
+        goToCenter.performClick();
 
         Coordinate center;
         if(getIntent().getSerializableExtra("center") != null) {
@@ -276,7 +277,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     public void onResume(){
         super.onResume();
-        myLocationNewOverlay.enableFollowLocation();
+        //myLocationNewOverlay.enableFollowLocation();
         myLocationNewOverlay.enableMyLocation();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
