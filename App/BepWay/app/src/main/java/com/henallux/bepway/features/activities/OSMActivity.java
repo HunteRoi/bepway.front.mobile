@@ -53,13 +53,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final double ZOOM_ROUTING = 20.0;
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
     private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
-    @BindView(R.id.map) public MapView map = null;
+    @BindView(R.id.map) public /*private*/ MapView map = null;
     private IMapController mapController;
     private Road road;
     private MyLocationNewOverlay myLocationNewOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mOverlayMarkers;
-    @BindView(R.id.ic_follow_me) public ImageButton getMyLocation;
-    @BindView(R.id.ic_center_map) public ImageButton centerMap;
+    @BindView(R.id.ic_follow_me) public /*private*/ ImageButton getMyLocation;
+    @BindView(R.id.ic_center_map) public /*private*/ ImageButton centerMap;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +68,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
+        //map.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         map.setZoomRounding(true);
@@ -93,6 +94,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
+        //centerMap.findViewById(R.id.ic_center_map);
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +112,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
+        //getMyLocation.findViewById(R.id.ic_follow_me);
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
