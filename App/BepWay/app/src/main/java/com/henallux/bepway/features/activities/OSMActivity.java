@@ -63,9 +63,9 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private Road road;
     private MyLocationNewOverlay myLocationNewOverlay;
     private MyOwnItemizedOverlay mOverlayMarkers;
-    @BindView(R.id.map) public /*private*/ MapView map = null;
-    @BindView(R.id.ic_follow_me) public /*private*/ ImageButton getMyLocation;
-    @BindView(R.id.ic_center_map) public /*private*/ ImageButton centerMap;
+    @BindView(R.id.map) public  MapView map = null;
+    @BindView(R.id.ic_follow_me) public ImageButton getMyLocation;
+    @BindView(R.id.ic_center_map) public ImageButton centerMap;
     @BindView(R.id.ic_go_to_center) public ImageButton goToCenter;
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -89,9 +89,6 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         map.getOverlays().add(mapEventsOverlay);
 
         myLocationNewOverlay = new MyLocationNewOverlay(map);
-        //For fun remove this comment
-        //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
-
         //For fun remove this comment
         //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));
 
@@ -126,8 +123,13 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<Overlay> overlays = map.getOverlays();
                 if(!myLocationNewOverlay.isMyLocationEnabled()){
-                    centerMap.performClick();
+                    //centerMap.performClick();
+                    if (!overlays.contains(myLocationNewOverlay) || !myLocationNewOverlay.isMyLocationEnabled()) {
+                        myLocationNewOverlay.enableMyLocation();
+                        overlays.add(myLocationNewOverlay);
+                    }
                     getMyLocation.setImageResource(R.drawable.ic_follow_me_on);
                 } else {
                     myLocationNewOverlay.disableFollowLocation();

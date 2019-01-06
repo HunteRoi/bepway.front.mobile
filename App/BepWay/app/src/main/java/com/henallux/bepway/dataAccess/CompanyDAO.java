@@ -44,7 +44,7 @@ public class CompanyDAO implements ICompanyDAO{
 
     public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, int pageSize, String filterKey, String filterValue) throws Exception{
         URL url;
-        if(filterKey == null | filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
+        if(filterKey == null | filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?zoningId=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
         else url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d&%s=%s",zoningId, pageIndex, pageSize,filterKey,filterValue));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 

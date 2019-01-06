@@ -331,42 +331,4 @@ public class CompaniesActivity extends AppCompatActivity {
             super.onCancelled();
         }
     }
-
-    /*public class LoadImageURL extends AsyncTask<Void,Void,Bitmap>{
-        private String URL;
-        private ImageView image;
-        public LoadImageURL(String URL, ImageView image){
-            super();
-            this.URL = URL;
-            this.image = image;
-        }
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            Bitmap bitmap = null;
-            try{
-                InputStream in = new java.net.URL(URL).openStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            }
-            catch (MalformedURLException exception){
-
-            }
-            catch (IOException exception){
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.company_example);
-
-            }
-
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            image.setImageBitmap(bitmap);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-    }*/
-
 }

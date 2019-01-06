@@ -60,4 +60,8 @@
     <string name="error_loading_road">Erreur lors du chargement de la route - statut :</string>
     <string name="step">Étape</string>
     <string name="go_to">Aller vers</string>
+    <string name="history">Les dernières entreprises que vous avez visité</string>
+    <string name="sample_company_name">Nom de l\'entreprise</string>
+    <string name="sample_company_sector">Secteur de l\'entreprise</string>
+    <string name="sample_company_address">Adresse de l\'entreprise</string>
 </resources>

@@ -56,7 +56,11 @@ public class AllCompaniesAdapter extends RecyclerView.Adapter<AllCompaniesAdapte
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(companies.get(position).isPremium()) holder.premium.setImageResource(R.drawable.ic_star);
+        if(companies.get(position).isPremium()) {
+            holder.premium.setImageResource(R.drawable.ic_star);
+            holder.premium.setVisibility(View.VISIBLE);
+        }
+        else holder.premium.setVisibility(View.INVISIBLE);
         holder.companyName.setText(companies.get(position).getName());
         holder.companyActivity.setText(companies.get(position).getSector());
         holder.companyAddress.setText(companies.get(position).getAddress());
