@@ -114,8 +114,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             mapController.setCenter(myLocationNewOverlay.getMyLocation());
             mapController.zoomTo(ZOOM_ROUTING);
             // possible adds here to change camera angle on map so it's axed with designed route
-            //myLocationNewOverlay.enableFollowLocation();
-                myLocationNewOverlay.disableFollowLocation();
+            myLocationNewOverlay.enableFollowLocation();
             }
         });
 
