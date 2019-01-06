@@ -57,6 +57,7 @@ public class CompaniesActivity extends AppCompatActivity {
     private String filterValue;
     private String lastFilterValue;
     private boolean firstResearchDone;
+    private int lastFirstVisiblePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class CompaniesActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1)) {
+                    lastFirstVisiblePosition = ((LinearLayoutManager)companiesToDisplay.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                     LoadCompanies addCompanies = new LoadCompanies();
                     addCompanies.execute();
                 }
@@ -321,6 +323,7 @@ public class CompaniesActivity extends AppCompatActivity {
             searchedCompanies.addAll(companies);
             adapter.setCompanies(searchedCompanies);
             companiesToDisplay.setAdapter(adapter);
+            ((LinearLayoutManager) companiesToDisplay.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);
         }
 
         @Override

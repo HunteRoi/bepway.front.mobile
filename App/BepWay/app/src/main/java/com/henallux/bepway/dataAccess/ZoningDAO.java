@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class ZoningDAO {
+public class ZoningDAO implements IZoningDAO{
 
     public ArrayList<Zoning> getAllZoningsAPI(String token, int pageIndex, String filterKey, String filterValue) throws ApiErrorException, Exception{
         URL url;
@@ -20,11 +20,6 @@ public class ZoningDAO {
         else url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d&%s=%s", pageIndex, filterKey, filterValue));
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        int test = connection.getResponseCode();
-        int test2 = HttpURLConnection.HTTP_INTERNAL_ERROR;
-
-        //if(connection.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) throw new ApiErrorException("Error coming from the API");
 
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
