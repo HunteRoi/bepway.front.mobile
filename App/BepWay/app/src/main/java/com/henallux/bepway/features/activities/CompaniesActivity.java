@@ -25,10 +25,14 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.henallux.bepway.Exception.CompanyException;
+import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.CompanyDAO;
 import com.henallux.bepway.features.adapters.AllCompaniesAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
+import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.features.util.LoadImage;
 import com.henallux.bepway.model.Company;
 
@@ -238,10 +242,13 @@ public class CompaniesActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if(company.getSiteUrl() != null){
-                        dialogCompanyInfo.dismiss();
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(company.getSiteUrl()));
-                        startActivity(i);
+                        if(CheckConnection.haveConnection(CompaniesActivity.this)){
+                            dialogCompanyInfo.dismiss();
+                            Intent i = new Intent(Intent.ACTION_VIEW);
+                            i.setData(Uri.parse(company.getSiteUrl()));
+                            startActivity(i);
+                        }
+                        else Toast.makeText(CompaniesActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
                     }
                     else{
                         Toast.makeText(CompaniesActivity.this, getString(R.string.no_url_provided), Toast.LENGTH_SHORT).show();
@@ -268,13 +275,16 @@ public class CompaniesActivity extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CompaniesActivity.this, OSMActivity.class);
-                ArrayList<Company> companies = new ArrayList<>();
-                companies.add(company);
-                intent.putExtra("type","Company");
-                intent.putExtra("center", company.getLocation());
-                intent.putExtra("companies",companies);
-                startActivity(intent);
+                if(CheckConnection.haveConnection(CompaniesActivity.this)){
+                    Intent intent = new Intent(CompaniesActivity.this, OSMActivity.class);
+                    ArrayList<Company> companies = new ArrayList<>();
+                    companies.add(company);
+                    intent.putExtra("type","Company");
+                    intent.putExtra("center", company.getLocation());
+                    intent.putExtra("companies",companies);
+                    startActivity(intent);
+                }
+                else Toast.makeText(CompaniesActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
         dialogCompanyInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -305,8 +315,12 @@ public class CompaniesActivity extends AppCompatActivity {
                     companies = companyDAO.getCompaniesByZoning(token, zoningId, pageNumber, filterKey, filterValue);
                 }
                 pageNumber++;
-            } catch (Exception e) {
-                Log.i("Company", e.getMessage());
+            }
+            catch (TokenException exception) {
+                Toast.makeText(CompaniesActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            catch (CompanyException exception) {
+                Toast.makeText(CompaniesActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return companies;
         }
@@ -315,12 +329,6 @@ public class CompaniesActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Company> companies) {
             allCompanies.addAll(companies);
             searchedCompanies.addAll(companies);
-            /*Collections.sort(searchedCompanies, new Comparator<Company>() {
-                @Override
-                public int compare(Company o1, Company o2) {
-                    return Boolean.compare(o1.isPremium(), o2.isPremium());
-                }
-            });*/
             adapter.setCompanies(searchedCompanies);
             companiesToDisplay.setAdapter(adapter);
             (companiesToDisplay.getLayoutManager()).scrollToPosition(lastFirstVisiblePosition);

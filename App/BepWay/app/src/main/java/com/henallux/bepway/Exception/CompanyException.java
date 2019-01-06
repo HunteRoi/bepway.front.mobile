@@ -1,10 +1,10 @@
 package com.henallux.bepway.Exception;
 
-public class JSONException extends Exception {
+public class CompanyException extends Exception{
     private String errorMessage;
 
-    public JSONException(String errorMessage){
-        setErrorMessage("Error while reading data : " + errorMessage);
+    public CompanyException(){
+        setErrorMessage("Une erreur est survenue lors de l'obtention des entreprises");
     }
     @Override
     public String getMessage() {

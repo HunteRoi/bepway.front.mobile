@@ -20,11 +20,14 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.henallux.bepway.Exception.TokenException;
+import com.henallux.bepway.Exception.ZoningException;
 import com.henallux.bepway.R;
 import com.henallux.bepway.dataAccess.CompanyDAO;
 import com.henallux.bepway.dataAccess.ZoningDAO;
 import com.henallux.bepway.features.adapters.AllZoningsAdapter;
 import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
+import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Zoning;
 
@@ -153,27 +156,36 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         companies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                Intent intentList = new Intent(ZoningsActivity.this, CompaniesActivity.class);
-                intentList.putExtra("zoningId", zoning.getId());
-                startActivity(intentList);
+                if(CheckConnection.haveConnection(ZoningsActivity.this)){
+                    dialog.dismiss();
+                    Intent intentList = new Intent(ZoningsActivity.this, CompaniesActivity.class);
+                    intentList.putExtra("zoningId", zoning.getId());
+                    startActivity(intentList);
+                }
+                else Toast.makeText(ZoningsActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
         website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(zoning.getUrl()));
-                startActivity(i);
+                if(CheckConnection.haveConnection(ZoningsActivity.this)){
+                    dialog.dismiss();
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(zoning.getUrl()));
+                    startActivity(i);
+                }
+                else Toast.makeText(ZoningsActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                LoadCompanies loadCompanies = new LoadCompanies();
-                loadCompanies.execute(zoning);
+                if(CheckConnection.haveConnection(ZoningsActivity.this)){
+                    dialog.dismiss();
+                    LoadCompanies loadCompanies = new LoadCompanies();
+                    loadCompanies.execute(zoning);
+                }
+                else Toast.makeText(ZoningsActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
             }
         });
         textClose.setOnClickListener(new View.OnClickListener() {
@@ -204,8 +216,12 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
                 zonings = zoningDAO.getAllZoningsAPI(token, pageNumber, filterKey, filterValue);
                 pageNumber++;
-            } catch (Exception e) {
-                Log.i("fzqefze", e.getMessage());
+            }
+            catch (TokenException exception){
+                Toast.makeText(ZoningsActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            catch (ZoningException exception) {
+                Toast.makeText(ZoningsActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return zonings;
         }
@@ -239,7 +255,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
-                companies = companyDAO.getCompaniesByZoning(token, params[0].getId(),0, params[0].getNbImplantations(), null, null);
+                Zoning zoning = params[0];
+                companies = companyDAO.getCompaniesByZoning(token, zoning.getId(),0, zoning.getNbImplantations(), null, null);
             } catch (Exception e) {
                 Toast.makeText(ZoningsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class Zoning {
     private int id;
-    private String idOpenData;
     private String name;
     private Coordinate zoningCenter;
     private String city;
@@ -78,14 +77,6 @@ public class Zoning {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getIdOpenData() {
-        return idOpenData;
-    }
-
-    public void setIdOpenData(String idOpenData) {
-        this.idOpenData = idOpenData;
     }
 
     public int getNbImplantations() {

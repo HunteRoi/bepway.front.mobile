@@ -8,12 +8,12 @@ public class TokenException extends Exception {
     public TokenException(String errorMessage){
         setErrorMessage(errorMessage);
     }
+
+    public TokenException(){
+        setErrorMessage("Erreur lors de l'obtention du token");
+    }
     @Override
     public String getMessage() {
-        return getErrorMessage();
-    }
-
-    public String getErrorMessage() {
         return errorMessage;
     }
 

@@ -195,7 +195,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     }
 
     public void drawRouteAndRecenterMapView(OverlayItem item) {
-        if (hasPermissionToTrackUser() && (CheckConnection.isWifiConnected(OSMActivity.this) || CheckConnection.is3GConnected(OSMActivity.this))) {
+        if (hasPermissionToTrackUser() && CheckConnection.haveConnection(OSMActivity.this)) {
             if (!myLocationNewOverlay.isMyLocationEnabled()) myLocationNewOverlay.enableMyLocation();
             RoadTask task = new RoadTask();
             ArrayList<GeoPoint> waypoints = new ArrayList<>();

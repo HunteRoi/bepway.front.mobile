@@ -1,11 +1,12 @@
 package com.henallux.bepway.Exception;
 
-public class JSONException extends Exception {
+public class ZoningException extends Exception{
     private String errorMessage;
 
-    public JSONException(String errorMessage){
-        setErrorMessage("Error while reading data : " + errorMessage);
+    public ZoningException(){
+        setErrorMessage("Une erreur est survenue lors de l'obtention des zonings");
     }
+
     @Override
     public String getMessage() {
         return errorMessage;

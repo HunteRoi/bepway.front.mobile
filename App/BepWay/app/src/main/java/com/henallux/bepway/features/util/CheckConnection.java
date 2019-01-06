@@ -5,6 +5,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public final class CheckConnection {
+
+    public static Boolean haveConnection(Context context){
+        return (isWifiConnected(context) || is3GConnected(context));
+    }
+
     public static boolean isWifiConnected(Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

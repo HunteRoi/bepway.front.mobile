@@ -54,7 +54,7 @@ public class LogFragment extends Fragment {
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckConnection.isWifiConnected(getActivity().getApplicationContext()) || CheckConnection.is3GConnected(getActivity().getApplicationContext())){
+                if(CheckConnection.haveConnection(getActivity().getApplicationContext())){
                     getToken = new GetToken();
                     loginModel = new LoginModel(username.getText().toString().trim(), password.getText().toString().trim());
                     getToken.execute(loginModel);
@@ -88,11 +88,9 @@ public class LogFragment extends Fragment {
             }
             try {
                 token = tokenDAO.getToken(params[0]);
-            } catch (TokenException e) {
-                token.setException(e.getErrorMessage());
             }
-            catch (Exception ex){
-                token.setException(ex.getMessage());
+            catch (TokenException e) {
+                token.setException(e.getErrorMessage());
             }
             return token;
         }

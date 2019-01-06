@@ -64,11 +64,9 @@ public class SplashActivity extends AppCompatActivity {
             }
             try {
                 token = tokenDAO.getToken(params[0]);
-            } catch (TokenException e) {
-                token.setException(e.getErrorMessage());
             }
-            catch (Exception ex){
-                token.setException(ex.getMessage());
+            catch (TokenException e) {
+                token.setException(e.getErrorMessage());
             }
             return token;
         }

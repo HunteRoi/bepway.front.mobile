@@ -2,6 +2,9 @@ package com.henallux.bepway.dataAccess;
 
 import android.util.Log;
 import com.henallux.bepway.Exception.ApiErrorException;
+import com.henallux.bepway.Exception.JSONException;
+import com.henallux.bepway.Exception.TokenException;
+import com.henallux.bepway.Exception.ZoningException;
 import com.henallux.bepway.model.Coordinate;
 import com.henallux.bepway.model.Zoning;
 import org.json.JSONArray;
@@ -14,29 +17,38 @@ import java.util.ArrayList;
 
 public class ZoningDAO implements IZoningDAO{
 
-    public ArrayList<Zoning> getAllZoningsAPI(String token, int pageIndex, String filterKey, String filterValue) throws ApiErrorException, Exception{
-        URL url;
-        if(filterKey == null || filterValue == null)url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d", pageIndex));
-        else url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d&%s=%s", pageIndex, filterKey, filterValue));
+    public ArrayList<Zoning> getAllZoningsAPI(String token, int pageIndex, String filterKey, String filterValue) throws TokenException, ZoningException {
+        try{
+            URL url;
+            if(filterKey == null || filterValue == null)url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d", pageIndex));
+            else url = new URL(String.format("https://bepway.azurewebsites.net/api/Zoning?pageIndex=%2d&%s=%s", pageIndex, filterKey, filterValue));
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer "+token);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer "+token);
 
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        String stringJSON = "",line;
-        while((line = buffer.readLine()) != null){
-            stringBuilder.append(line);
+            connection.connect();
+
+            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+            String stringJSON = "",line;
+            while((line = buffer.readLine()) != null){
+                stringBuilder.append(line);
+            }
+            buffer.close();
+            stringJSON = stringBuilder.toString();
+            return jsonToAPIZonings(stringJSON);
         }
-        buffer.close();
-        stringJSON = stringBuilder.toString();
-        return jsonToAPIZonings(stringJSON);
+        catch (Exception exception){
+            throw new ZoningException();
+        }
     }
 
-    public ArrayList<Zoning> jsonToAPIZonings(String stringJSON) throws Exception{
+    public ArrayList<Zoning> jsonToAPIZonings(String stringJSON) throws JSONException {
         ArrayList<Zoning> zonings = new ArrayList<>();
         try {
             JSONArray records = new JSONArray(stringJSON);
@@ -55,7 +67,10 @@ public class ZoningDAO implements IZoningDAO{
                 zoning.setNbImplantations(zoningJson.getInt("nbImplantations"));
                 zonings.add(zoning);
             }
-        } catch (Exception ex) {Log.i("Errors", ex.getClass() +" - "+ ex.getMessage());}
+        }
+        catch (Exception exception ) {
+            throw new JSONException(exception.getMessage());
+        }
         return zonings;
     }
 }

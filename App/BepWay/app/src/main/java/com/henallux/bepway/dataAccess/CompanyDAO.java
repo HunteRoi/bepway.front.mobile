@@ -2,8 +2,10 @@ package com.henallux.bepway.dataAccess;
 
 import android.util.Log;
 
-import com.henallux.bepway.Exception.ApiErrorException;
+import com.henallux.bepway.Exception.CompanyException;
 import com.henallux.bepway.Exception.JSONException;
+import com.henallux.bepway.Exception.TokenException;
+import com.henallux.bepway.R;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Coordinate;
 
@@ -19,56 +21,74 @@ public class CompanyDAO implements ICompanyDAO{
 
     private final int DEFAULT_PAGE_SIZE = 15;
 
-    public ArrayList<Company> getAllCompanies(String token, int pageIndex, String filterKey, String filterValue) throws Exception{
-        URL url;
-        if(filterKey == null || filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d",pageIndex));
-        else url =new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d&%s=%s",pageIndex,filterKey, filterValue));
+    public ArrayList<Company> getAllCompanies(String token, int pageIndex, String filterKey, String filterValue) throws TokenException, CompanyException{
+       try{
+           URL url;
+           if(filterKey == null || filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d",pageIndex));
+           else url =new URL(String.format("https://bepway.azurewebsites.net/api/Company?pageIndex=%2d&%s=%s",pageIndex,filterKey, filterValue));
+           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+           connection.setRequestMethod("GET");
+           connection.setRequestProperty("Content-Type", "application/json");
+           connection.setRequestProperty("Authorization", "Bearer "+token);
 
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer "+token);
+           connection.connect();
 
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        String stringJSON = "",line;
-        while((line = buffer.readLine()) != null){
-            stringBuilder.append(line);
-        }
-        buffer.close();
-        stringJSON = stringBuilder.toString();
-        Log.i("Company", stringJSON);
-        return jsonToCompanies(stringJSON);
+           if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+
+           BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+           StringBuilder stringBuilder = new StringBuilder();
+           String stringJSON = "",line;
+           while((line = buffer.readLine()) != null){
+               stringBuilder.append(line);
+           }
+           buffer.close();
+           stringJSON = stringBuilder.toString();
+           Log.i("Company", stringJSON);
+           return jsonToCompanies(stringJSON);
+       }
+       catch (Exception exception){
+           throw new CompanyException();
+       }
     }
 
-    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, int pageSize, String filterKey, String filterValue) throws Exception{
-        URL url;
-        if(filterKey == null | filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?zoningId=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
-        else url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d&%s=%s",zoningId, pageIndex, pageSize,filterKey,filterValue));
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, int pageSize, String filterKey, String filterValue) throws TokenException, CompanyException{
+        try{
+            URL url;
+            if(filterKey == null | filterValue == null) url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?zoningId=%s&pageIndex=%2d&pageSize=%2d",zoningId, pageIndex, pageSize));
+            else url = new URL(String.format("https://bepway.azurewebsites.net/api/Company?idZoning=%s&pageIndex=%2d&pageSize=%2d&%s=%s",zoningId, pageIndex, pageSize,filterKey,filterValue));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization", "Bearer "+token);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer "+token);
 
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        String stringJSON = "",line;
-        while((line = buffer.readLine()) != null){
-            stringBuilder.append(line);
+            connection.connect();
+
+            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+            String stringJSON = "",line;
+            while((line = buffer.readLine()) != null){
+                stringBuilder.append(line);
+            }
+            buffer.close();
+            stringJSON = stringBuilder.toString();
+            Log.i("Company", stringJSON);
+            return jsonToCompanies(stringJSON);
         }
-        buffer.close();
-        stringJSON = stringBuilder.toString();
-        Log.i("Company", stringJSON);
-        return jsonToCompanies(stringJSON);
+
+        catch (Exception exception){
+            throw  new CompanyException();
+        }
     }
 
-    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, String filterKey, String filterValue) throws Exception{
+    public ArrayList<Company> getCompaniesByZoning(String token, int zoningId, int pageIndex, String filterKey, String filterValue) throws TokenException, CompanyException{
         return getCompaniesByZoning(token, zoningId, pageIndex, DEFAULT_PAGE_SIZE, filterKey, filterValue);
     }
 
-    public ArrayList<Company> jsonToCompanies(String stringJSON) throws Exception, JSONException{
+    public ArrayList<Company> jsonToCompanies(String stringJSON) throws JSONException{
         ArrayList<Company> companies = new ArrayList<>();
         try{
             JSONArray records = new JSONArray(stringJSON);
@@ -91,8 +111,8 @@ public class CompanyDAO implements ICompanyDAO{
                 companies.add(company);
             }
         }
-        catch (Exception ex){
-            throw new JSONException("Error while reading data");
+        catch (Exception exception){
+            throw new JSONException(exception.getMessage());
         }
         return companies;
     }

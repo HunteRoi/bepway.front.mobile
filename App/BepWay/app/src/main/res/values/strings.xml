@@ -64,4 +64,6 @@
     <string name="sample_company_name">Nom de l\'entreprise</string>
     <string name="sample_company_sector">Secteur de l\'entreprise</string>
     <string name="sample_company_address">Adresse de l\'entreprise</string>
+    <string name="malformed_url">URL fournie incorrecte</string>
+    <string name="token_expired">le token est expiré</string>
 </resources>

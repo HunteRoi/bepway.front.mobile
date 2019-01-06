@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.henallux.bepway.R;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,11 +30,10 @@ public class LoadImage extends AsyncTask<Void,Void,Bitmap> {
             bitmap = BitmapFactory.decodeStream(in);
         }
         catch (MalformedURLException exception){
-
+            Toast.makeText(context, context.getString(R.string.malformed_url), Toast.LENGTH_SHORT).show();
         }
         catch (IOException exception){
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.company_example);
-
         }
 
         return bitmap;
