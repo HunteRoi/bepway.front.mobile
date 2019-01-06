@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class OSMActivity extends AppCompatActivity implements MapEventsReceiver {
 
@@ -64,11 +65,12 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_osm);
+        ButterKnife.bind(this);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
-        //map.findViewById(R.id.map);
+        //map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
 
         map.setZoomRounding(true);
@@ -94,7 +96,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-        //centerMap.findViewById(R.id.ic_center_map);
+        //centerMap = findViewById(R.id.ic_center_map);
         centerMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +114,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         });
 
-        //getMyLocation.findViewById(R.id.ic_follow_me);
+        //getMyLocation = findViewById(R.id.ic_follow_me);
         getMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
