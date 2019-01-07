@@ -121,6 +121,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         map.getOverlays().add(mapEventsOverlay);
 
+
         myLocationNewOverlay = new MyLocationNewOverlay(map);
         //For fun remove this comment
         //myLocationNewOverlay.setPersonIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_me));

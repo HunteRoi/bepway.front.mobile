@@ -2,11 +2,8 @@ package com.henallux.bepway.features.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.henallux.bepway.Exception.CompanyException;
 import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.R;
@@ -35,16 +30,15 @@ import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.features.util.LoadImage;
 import com.henallux.bepway.model.Company;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class CompaniesActivity extends AppCompatActivity {
 
     private final int ZONING_ID_MISSING = -1;
-    private RecyclerView companiesToDisplay;
+    @BindView(R.id.recyclerView) RecyclerView companiesToDisplay;
     private AllCompaniesAdapter adapter;
     private LoadCompanies loadCompanies;
     private ArrayList<Company> allCompanies;
@@ -69,13 +63,14 @@ public class CompaniesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_companies);
 
+        ButterKnife.bind(this);
+
         firstResearchDone = false;
         filterKey = "companyName";
         filterValue = null;
         lastFilterValue = null;
         pageNumber = 0;
         searchedCompanies = new ArrayList<>();
-        companiesToDisplay = findViewById(R.id.recyclerView);
 
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         RecyclerView.ItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
