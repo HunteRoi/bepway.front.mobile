@@ -2,6 +2,7 @@ package com.henallux.bepway.dataAccess;
 
 import com.google.gson.Gson;
 import com.henallux.bepway.Exception.TokenException;
+import com.henallux.bepway.R;
 import com.henallux.bepway.model.LoginModel;
 import com.henallux.bepway.model.Token;
 
@@ -38,8 +39,8 @@ public class TokenDAO implements ITokenDAO{
            outputStreamWriter.close();
            outputStream.close();
 
-           if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) throw new TokenException("Informations manquantes ou incorrectes");
-           if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) throw new TokenException("Utilisateur introuvable");
+           if (connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) throw new TokenException(R.string.log_info_error);
+           if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) throw new TokenException(R.string.wrong_username_error);
 
            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
            StringBuilder stringBuilder = new StringBuilder();

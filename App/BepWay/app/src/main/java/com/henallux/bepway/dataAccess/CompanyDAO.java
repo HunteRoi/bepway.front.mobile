@@ -34,7 +34,7 @@ public class CompanyDAO implements ICompanyDAO{
 
            connection.connect();
 
-           if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+           if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException(R.string.token_expired_error);
 
            BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
            StringBuilder stringBuilder = new StringBuilder();
@@ -48,7 +48,7 @@ public class CompanyDAO implements ICompanyDAO{
            return jsonToCompanies(stringJSON);
        }
        catch (Exception exception){
-           throw new CompanyException();
+           throw new CompanyException(R.string.company_error);
        }
     }
 
@@ -65,7 +65,7 @@ public class CompanyDAO implements ICompanyDAO{
 
             connection.connect();
 
-            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException(R.string.token_expired_error);
 
             BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder stringBuilder = new StringBuilder();
@@ -80,7 +80,7 @@ public class CompanyDAO implements ICompanyDAO{
         }
 
         catch (Exception exception){
-            throw  new CompanyException();
+            throw  new CompanyException(R.string.company_error);
         }
     }
 
@@ -112,7 +112,7 @@ public class CompanyDAO implements ICompanyDAO{
             }
         }
         catch (Exception exception){
-            throw new JSONException(exception.getMessage());
+            throw new JSONException(R.string.json_error);
         }
         return companies;
     }

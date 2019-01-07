@@ -1,17 +1,17 @@
 package com.henallux.bepway.Exception;
 
 public class JSONException extends Exception {
-    private String errorMessage;
+    private int errorMessage;
 
-    public JSONException(String errorMessage){
-        setErrorMessage("Error while reading data : " + errorMessage);
+    public JSONException(int errorMessage){
+        setErrorMessage(errorMessage);
     }
-    @Override
-    public String getMessage() {
+
+    public int getMessageCode() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(int errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

@@ -65,5 +65,11 @@
     <string name="sample_company_sector">Secteur de l\'entreprise</string>
     <string name="sample_company_address">Adresse de l\'entreprise</string>
     <string name="malformed_url">URL fournie incorrecte</string>
-    <string name="token_expired">le token est expiré</string>
+    <string name="company_error">Une erreur est survenue lors de l\obtention des entreprises</string>
+    <string name="json_error">Erreur lors de la lecture des données</string>
+    <string name="token_getting_error">Erreur lors de l\'obtention du token</string>
+    <string name="token_expired_error">Le token a expiré</string>
+    <string name="zoning_error">Une erreur est survenue lors de l\obtention des zonings</string>
+    <string name="log_info_error">Informations manquantes ou incorrectes"</string>
+    <string name="wrong_username_error">Utilisateur introuvable</string>
 </resources>

@@ -1,18 +1,20 @@
 package com.henallux.bepway.Exception;
 
+import com.henallux.bepway.R;
+
 public class ZoningException extends Exception{
-    private String errorMessage;
+    private int errorMessage;
 
     public ZoningException(){
-        setErrorMessage("Une erreur est survenue lors de l'obtention des zonings");
+        setErrorMessage(R.string.zoning_error);
     }
 
-    @Override
-    public String getMessage() {
+
+    public int getMessageCode() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(int errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

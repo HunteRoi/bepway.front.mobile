@@ -328,10 +328,10 @@ public class CompaniesActivity extends AppCompatActivity {
                 pageNumber++;
             }
             catch (TokenException exception) {
-                Toast.makeText(CompaniesActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
             }
             catch (CompanyException exception) {
-                Toast.makeText(CompaniesActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
             }
             return companies;
         }

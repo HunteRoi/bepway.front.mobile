@@ -1,17 +1,18 @@
 package com.henallux.bepway.Exception;
 
 public class CompanyException extends Exception{
-    private String errorMessage;
+    private int errorMessage;
 
-    public CompanyException(){
-        setErrorMessage("Une erreur est survenue lors de l'obtention des entreprises");
+    public CompanyException(int errorMessage){
+        setErrorMessage(errorMessage);
     }
-    @Override
-    public String getMessage() {
+
+
+    public int getMessageCode() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(int errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

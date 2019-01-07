@@ -1,10 +1,9 @@
 package com.henallux.bepway.dataAccess;
 
-import android.util.Log;
-import com.henallux.bepway.Exception.ApiErrorException;
 import com.henallux.bepway.Exception.JSONException;
 import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.Exception.ZoningException;
+import com.henallux.bepway.R;
 import com.henallux.bepway.model.Coordinate;
 import com.henallux.bepway.model.Zoning;
 import org.json.JSONArray;
@@ -31,7 +30,7 @@ public class ZoningDAO implements IZoningDAO{
 
             connection.connect();
 
-            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException("The token expired");
+            if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) throw new TokenException(R.string.token_expired_error);
 
             BufferedReader buffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             StringBuilder stringBuilder = new StringBuilder();
@@ -69,7 +68,7 @@ public class ZoningDAO implements IZoningDAO{
             }
         }
         catch (Exception exception ) {
-            throw new JSONException(exception.getMessage());
+            throw new JSONException(R.string.json_error);
         }
         return zonings;
     }

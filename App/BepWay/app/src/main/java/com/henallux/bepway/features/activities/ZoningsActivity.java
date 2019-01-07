@@ -218,10 +218,10 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 pageNumber++;
             }
             catch (TokenException exception){
-                Toast.makeText(ZoningsActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
             }
             catch (ZoningException exception) {
-                Toast.makeText(ZoningsActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
             }
             return zonings;
         }

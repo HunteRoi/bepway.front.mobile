@@ -1,23 +1,26 @@
 package com.henallux.bepway.Exception;
 
 
+import com.henallux.bepway.R;
+
 public class TokenException extends Exception {
 
-    private String errorMessage;
+    private int errorMessage;
 
-    public TokenException(String errorMessage){
+    public TokenException(int errorMessage){
         setErrorMessage(errorMessage);
     }
 
     public TokenException(){
-        setErrorMessage("Erreur lors de l'obtention du token");
+        setErrorMessage(R.string.token_getting_error);
     }
-    @Override
-    public String getMessage() {
+
+
+    public int getMessageCode() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(int errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

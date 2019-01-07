@@ -53,7 +53,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
 
     private final double ZOOM_COMPANY = 19.0;
     private final double ZOOM_ZONING =  16.0;
-    private final double ZOOM_ROUTING = 20.0;
+    private final double ZOOM_ROUTING = 17;
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
     private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
     private GeoPoint mapCenter;
