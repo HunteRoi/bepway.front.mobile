@@ -73,4 +73,5 @@
     <string name="log_info_error">Informations manquantes ou incorrectes"</string>
     <string name="wrong_username_error">Utilisateur introuvable</string>
     <string name="task_cancelled">Tâche interrompue</string>
+    <string name="sample_title">Démonstration d\'une fonction non implémentée</string>
 </resources>
