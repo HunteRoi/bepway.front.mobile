@@ -56,6 +56,9 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final double ZOOM_ROUTING = 18.5;
     private final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 0;
     private final int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 1;
+    private final String CENTER_KEY = "center";
+    private final String TYPE_KEY = "type";
+    private final String COMPANIES_KEY = "companies";
     private GeoPoint mapCenter;
     private IMapController mapController;
     private Road road;
@@ -153,24 +156,24 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             }
         };
 
-        if(getIntent().getSerializableExtra("center") != null){
-            if(getIntent().getStringExtra("type").equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
+        if(getIntent().getSerializableExtra(CENTER_KEY) != null){
+            if(getIntent().getStringExtra(TYPE_KEY).equals("Zoning")) mapController.setZoom(ZOOM_ZONING);
             else mapController.setZoom(ZOOM_COMPANY);
         }
         mapController.setCenter(mapCenter);
 
         Coordinate center;
-        if(getIntent().getSerializableExtra("center") != null) {
+        if(getIntent().getSerializableExtra(CENTER_KEY) != null) {
             //Get zoning center + its companies and put marker on them
-            center = (Coordinate) getIntent().getSerializableExtra("center");
+            center = (Coordinate) getIntent().getSerializableExtra(CENTER_KEY);
             mapCenter = new GeoPoint(center.getLatitude(),center.getLongitude());
             mapController.setCenter(mapCenter);
         }
 
         ArrayList<Company> companies = new ArrayList<>();
 
-        if(getIntent().getSerializableExtra("companies") != null) {
-            companies = (ArrayList<Company>) getIntent().getSerializableExtra("companies");
+        if(getIntent().getSerializableExtra(COMPANIES_KEY) != null) {
+            companies = (ArrayList<Company>) getIntent().getSerializableExtra(COMPANIES_KEY);
             Drawable markerCompany = this.getResources().getDrawable(R.drawable.ic_place_map, null);
             ArrayList<OverlayItem> items = new ArrayList<>();
             for (Company company : companies) {

@@ -39,7 +39,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/sample_title"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="²"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
