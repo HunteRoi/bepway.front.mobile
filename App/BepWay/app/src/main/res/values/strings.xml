@@ -69,7 +69,7 @@
     <string name="json_error">Erreur lors de la lecture des données</string>
     <string name="token_getting_error">Erreur lors de l\'obtention du token</string>
     <string name="token_expired_error">Le token a expiré</string>
-    <string name="zoning_error">Une erreur est survenue lors de l\obtention des zonings</string>
+    <string name="zoning_error">Une erreur est survenue lors de l\'obtention des zonings</string>
     <string name="log_info_error">Informations manquantes ou incorrectes"</string>
     <string name="wrong_username_error">Utilisateur introuvable</string>
     <string name="task_cancelled">Tâche interrompue</string>

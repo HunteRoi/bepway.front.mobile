@@ -126,12 +126,17 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchedZonings.clear();
-                for(Zoning zoning : allZonings){
-                    if(zoning.getName().toLowerCase().contains(newText.toLowerCase())) searchedZonings.add(zoning);
-                }
-                adapter.setZonings(searchedZonings);
-                zoningsToDisplay.setAdapter(adapter);
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                filterValue = null;
+                searchedZonings = new ArrayList<>();
+                pageNumber = 0;
+                LoadZonings loadZonings = new LoadZonings();
+                loadZonings.execute();
                 return false;
             }
         });
@@ -218,11 +223,19 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 zonings = zoningDAO.getAllZoningsAPI(token, pageNumber, filterKey, filterValue);
                 pageNumber++;
             }
-            catch (TokenException exception){
-                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final TokenException exception){
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-            catch (ZoningException exception) {
-                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final ZoningException exception) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             return zonings;
         }
@@ -259,11 +272,19 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 Zoning zoning = params[0];
                 companies = companyDAO.getCompaniesByZoning(token, zoning.getId(),0, zoning.getNbImplantations(), null, null);
             }
-            catch (TokenException exception) {
-                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final TokenException exception) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-            catch (CompanyException exception) {
-                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final CompanyException exception) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             return companies;
         }

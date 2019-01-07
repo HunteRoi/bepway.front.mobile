@@ -206,7 +206,6 @@ public class CompaniesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //filterCompanies(newText);
                 return false;
             }
         });
@@ -327,11 +326,19 @@ public class CompaniesActivity extends AppCompatActivity {
                 }
                 pageNumber++;
             }
-            catch (TokenException exception) {
-                Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final TokenException exception) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-            catch (CompanyException exception) {
-                Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            catch (final CompanyException exception) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(CompaniesActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             return companies;
         }
