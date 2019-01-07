@@ -9,19 +9,22 @@ import com.henallux.bepway.features.adapters.SectionsPageAdapter;
 import com.henallux.bepway.features.fragment.GuestFragment;
 import com.henallux.bepway.features.fragment.LogFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends FragmentActivity {
 
     private SectionsPageAdapter sectionsPageAdapter;
-    private ViewPager viewPager;
+    @BindView (R.id.loginViewPager) ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
         sectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
 
-        viewPager = findViewById(R.id.loginViewPager);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = findViewById(R.id.loginTab);

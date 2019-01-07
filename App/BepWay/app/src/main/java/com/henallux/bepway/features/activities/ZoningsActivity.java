@@ -12,14 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.henallux.bepway.Exception.CompanyException;
 import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.Exception.ZoningException;
@@ -31,13 +29,15 @@ import com.henallux.bepway.features.recyclerView.RecyclerItemClickListener;
 import com.henallux.bepway.features.util.CheckConnection;
 import com.henallux.bepway.model.Company;
 import com.henallux.bepway.model.Zoning;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ZoningsActivity extends AppCompatActivity implements Serializable {
 
-    private RecyclerView zoningsToDisplay;
+    @BindView(R.id.recyclerView) RecyclerView zoningsToDisplay;
     private AllZoningsAdapter adapter;
     private LoadZonings loadZonings;
     private ArrayList<Zoning> allZonings;
@@ -55,6 +55,8 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout_zonings);
 
+        ButterKnife.bind(this);
+
         pageNumber = 0;
         firstResearchDone = false;
         filterValue = null;
@@ -64,7 +66,6 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.zoning_popup);
 
-        zoningsToDisplay = findViewById(R.id.recyclerView);
         zoningsToDisplay.addOnItemTouchListener(new RecyclerItemClickListener(this.getApplicationContext(), zoningsToDisplay, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
