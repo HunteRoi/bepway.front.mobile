@@ -314,7 +314,7 @@ public class CompaniesActivity extends AppCompatActivity {
             ArrayList<Company> companies = new ArrayList<>();
             CompanyDAO companyDAO = new CompanyDAO();
             if(isCancelled()){
-                Log.i("Company","Is cancelled");
+                Toast.makeText(CompaniesActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(CompaniesActivity.this).getString("Token",null);

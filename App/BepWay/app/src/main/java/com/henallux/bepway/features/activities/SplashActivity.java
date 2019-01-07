@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
             Token token = new Token();
             TokenDAO tokenDAO = new TokenDAO();
             if(isCancelled()){
-
+                Toast.makeText(SplashActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 token = tokenDAO.getToken(params[0]);

@@ -20,6 +20,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.henallux.bepway.Exception.CompanyException;
 import com.henallux.bepway.Exception.TokenException;
 import com.henallux.bepway.Exception.ZoningException;
 import com.henallux.bepway.R;
@@ -210,7 +211,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             ArrayList<Zoning> zonings = new ArrayList<>();
             ZoningDAO zoningDAO = new ZoningDAO();
             if(isCancelled()){
-                Log.i("Zoning","Is cancelled");
+                Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
@@ -251,14 +252,18 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             ArrayList<Company> companies = new ArrayList<>();
             CompanyDAO companyDAO = new CompanyDAO();
             if(isCancelled()){
-                Log.i("Zoning","Is cancelled");
+                Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
                 Zoning zoning = params[0];
                 companies = companyDAO.getCompaniesByZoning(token, zoning.getId(),0, zoning.getNbImplantations(), null, null);
-            } catch (Exception e) {
-                Toast.makeText(ZoningsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            catch (TokenException exception) {
+                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
+            }
+            catch (CompanyException exception) {
+                Toast.makeText(ZoningsActivity.this, getString(exception.getMessageCode()), Toast.LENGTH_SHORT).show();
             }
             return companies;
         }

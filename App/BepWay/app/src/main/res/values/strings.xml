@@ -72,4 +72,5 @@
     <string name="zoning_error">Une erreur est survenue lors de l\obtention des zonings</string>
     <string name="log_info_error">Informations manquantes ou incorrectes"</string>
     <string name="wrong_username_error">Utilisateur introuvable</string>
+    <string name="task_cancelled">Tâche interrompue</string>
 </resources>
