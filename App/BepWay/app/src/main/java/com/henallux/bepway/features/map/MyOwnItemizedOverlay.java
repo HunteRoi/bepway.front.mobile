@@ -36,6 +36,18 @@ public class MyOwnItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
     }
 
     @Override
+    public void removeAllItems() {
+        companies.clear();
+        super.removeAllItems();
+    }
+
+
+    public boolean addItem(OverlayItem item, Company company) {
+        companies.add(company);
+        return super.addItem(item);
+    }
+
+    @Override
     protected boolean onSingleTapUpHelper(final int index, final OverlayItem item, final MapView mapView) {
          dialog = new Dialog(osmActivity);
          company = companies.get(index);
@@ -89,8 +101,9 @@ public class MyOwnItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               osmActivity.drawRouteAndRecenterMapView(item);
-               dialog.dismiss();
+                osmActivity.setDestination(company);
+                osmActivity.drawRouteAndRecenterMapView(item);
+                dialog.dismiss();
             }
         });
 

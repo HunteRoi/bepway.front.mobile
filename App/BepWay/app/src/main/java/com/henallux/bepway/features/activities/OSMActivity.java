@@ -59,6 +59,8 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final String CENTER_KEY = "center";
     private final String TYPE_KEY = "type";
     private final String COMPANIES_KEY = "companies";
+    private ArrayList<Company> companies;
+    private Company destination;
     private RoadTask roadTask;
     private GeoPoint mapCenter;
     private IMapController mapController;
@@ -171,7 +173,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             mapController.setCenter(mapCenter);
         }
 
-        ArrayList<Company> companies = new ArrayList<>();
+        companies = new ArrayList<>();
 
         if(getIntent().getSerializableExtra(COMPANIES_KEY) != null) {
             companies = (ArrayList<Company>) getIntent().getSerializableExtra(COMPANIES_KEY);
@@ -195,15 +197,20 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             ArrayList<GeoPoint> waypoints = new ArrayList<>();
             waypoints.add(myLocationNewOverlay.getMyLocation());
             waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
-            map.getOverlays().remove(mOverlayMarkers);
+            mOverlayMarkers.removeAllItems();
+            OverlayItem destinationItem =new OverlayItem(destination.getName(), destination.getSector(), new GeoPoint(destination.getLocation().getLatitude(), destination.getLocation().getLongitude()));
+            destinationItem.setMarker(this.getResources().getDrawable(R.drawable.ic_place_map, null));
+            mOverlayMarkers.addItem(destinationItem, destination);
+            //map.getOverlays().remove(mOverlayMarkers);
             roadTask.execute(waypoints);
-
             centerMap.performClick();
         } else {
             if(!hasPermissionToTrackUser()) Toast.makeText(OSMActivity.this, R.string.location_permission_required, Toast.LENGTH_SHORT).show();
             else Toast.makeText(OSMActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void setDestination(Company company){this.destination = company;}
 
     private void checkPermissions(){
         if (!hasFineLocationPermission()) {
