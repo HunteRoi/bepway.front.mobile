@@ -27,17 +27,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                        .getString("Login",null);
+        login = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Login",null);
 
-        password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                            .getString("Password",null);
+        password = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("Password",null);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 if(login != null && password != null){
                     LoginModel loginModel = new LoginModel(login, password);
                     getToken = new GetToken();
@@ -47,7 +44,6 @@ public class SplashActivity extends AppCompatActivity {
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
-
             }
         }, 3000);
 
@@ -75,9 +71,9 @@ public class SplashActivity extends AppCompatActivity {
         protected void onPostExecute(Token token) {
             if(token.getToken() != null){
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                        .edit()
-                        .putString("Token",token.getToken())
-                        .apply();
+                    .edit()
+                    .putString("Token",token.getToken())
+                    .apply();
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
             }
