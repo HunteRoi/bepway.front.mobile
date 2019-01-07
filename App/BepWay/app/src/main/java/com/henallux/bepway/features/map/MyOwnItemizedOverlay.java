@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.henallux.bepway.R;
+import com.henallux.bepway.features.activities.MainActivity;
 import com.henallux.bepway.features.activities.OSMActivity;
 import com.henallux.bepway.features.util.LoadImage;
 import com.henallux.bepway.model.Company;
@@ -89,7 +90,6 @@ public class MyOwnItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
         TextView companyName = dialog.findViewById(R.id.companyName);
         TextView mapTitle = dialog.findViewById(R.id.mapTitle);
         ImageView map = dialog.findViewById(R.id.companyMap);
-        map.setImageResource(R.drawable.ic_go_to);
         companyName.setText(company.getName());
         textClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,16 +97,30 @@ public class MyOwnItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
                 dialog.dismiss();
             }
         });
-        mapTitle.setText(mContext.getString(R.string.go_to));
-        map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                osmActivity.setDestination(company);
-                osmActivity.drawRouteAndRecenterMapView(item);
-                dialog.dismiss();
-            }
-        });
-
+        if (osmActivity.getDestination() != null && osmActivity.getDestination().equals(company)) {
+            map.setImageResource(R.drawable.ic_check);
+            mapTitle.setText(mContext.getString(R.string.arrived));
+            map.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(osmActivity, MainActivity.class);
+                    osmActivity.startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+        }
+        else{
+            map.setImageResource(R.drawable.ic_go_to);
+            mapTitle.setText(mContext.getString(R.string.go_to));
+            map.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    osmActivity.setDestination(company);
+                    osmActivity.drawRouteAndRecenterMapView(item);
+                    dialog.dismiss();
+                }
+            });
+        }
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
         return true;

@@ -211,6 +211,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     }
 
     public void setDestination(Company company){this.destination = company;}
+    public Company getDestination(){return destination;}
 
     private void checkPermissions(){
         if (!hasFineLocationPermission()) {
@@ -307,5 +308,10 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     protected void onDestroy() {
         if(roadTask != null) roadTask.cancel(true);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
