@@ -119,4 +119,9 @@ public class LogFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        if(getToken != null) getToken.cancel(true);
+        super.onDestroy();
+    }
 }

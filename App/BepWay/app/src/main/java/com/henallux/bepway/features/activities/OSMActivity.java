@@ -59,6 +59,7 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     private final String CENTER_KEY = "center";
     private final String TYPE_KEY = "type";
     private final String COMPANIES_KEY = "companies";
+    private RoadTask roadTask;
     private GeoPoint mapCenter;
     private IMapController mapController;
     private Road road;
@@ -190,12 +191,12 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
     public void drawRouteAndRecenterMapView(OverlayItem item) {
         if (hasPermissionToTrackUser() && CheckConnection.haveConnection(OSMActivity.this)) {
             if (!myLocationNewOverlay.isMyLocationEnabled()) myLocationNewOverlay.enableMyLocation();
-            RoadTask task = new RoadTask();
+            roadTask = new RoadTask();
             ArrayList<GeoPoint> waypoints = new ArrayList<>();
             waypoints.add(myLocationNewOverlay.getMyLocation());
             waypoints.add(new GeoPoint(item.getPoint().getLatitude(), item.getPoint().getLongitude()));
             map.getOverlays().remove(mOverlayMarkers);
-            task.execute(waypoints);
+            roadTask.execute(waypoints);
 
             centerMap.performClick();
         } else {
@@ -266,6 +267,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
             map.getOverlays().add(roadOverlay);
             map.invalidate();
         }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
     }
 
     public void onResume(){
@@ -288,5 +294,11 @@ public class OSMActivity extends AppCompatActivity implements MapEventsReceiver 
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(roadTask != null) roadTask.cancel(true);
+        super.onDestroy();
     }
 }

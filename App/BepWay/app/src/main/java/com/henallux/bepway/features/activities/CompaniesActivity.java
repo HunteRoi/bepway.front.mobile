@@ -194,7 +194,7 @@ public class CompaniesActivity extends AppCompatActivity {
                 if(!filterValue.equals(lastFilterValue)) pageNumber = 0;
                 allCompanies = new ArrayList<>();
                 searchedCompanies = new ArrayList<>();
-                LoadCompanies loadCompanies = new LoadCompanies();
+                loadCompanies = new LoadCompanies();
                 loadCompanies.execute();
                 return false;
             }
@@ -210,7 +210,7 @@ public class CompaniesActivity extends AppCompatActivity {
                 filterValue = null;
                 searchedCompanies = new ArrayList<>();
                 pageNumber = 0;
-                LoadCompanies loadCompanies = new LoadCompanies();
+                loadCompanies = new LoadCompanies();
                 loadCompanies.execute();
                 return false;
             }
@@ -308,7 +308,7 @@ public class CompaniesActivity extends AppCompatActivity {
             ArrayList<Company> companies = new ArrayList<>();
             CompanyDAO companyDAO = new CompanyDAO();
             if(isCancelled()){
-                Toast.makeText(CompaniesActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CompaniesActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(CompaniesActivity.this).getString("Token",null);

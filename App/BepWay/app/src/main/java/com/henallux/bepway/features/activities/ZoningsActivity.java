@@ -40,6 +40,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
     @BindView(R.id.recyclerView) RecyclerView zoningsToDisplay;
     private AllZoningsAdapter adapter;
     private LoadZonings loadZonings;
+    private LoadCompanies loadCompanies;
     private ArrayList<Zoning> allZonings;
     private ArrayList<Zoning> searchedZonings;
     private Dialog dialog;
@@ -120,7 +121,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 if(!filterValue.equals(lastFilterValue)) pageNumber = 0;
                 allZonings = new ArrayList<>();
                 searchedZonings = new ArrayList<>();
-                LoadZonings loadZonings = new LoadZonings();
+                loadZonings = new LoadZonings();
                 loadZonings.execute();
                 return false;
             }
@@ -136,7 +137,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
                 filterValue = null;
                 searchedZonings = new ArrayList<>();
                 pageNumber = 0;
-                LoadZonings loadZonings = new LoadZonings();
+                loadZonings = new LoadZonings();
                 loadZonings.execute();
                 return false;
             }
@@ -189,7 +190,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 if(CheckConnection.haveConnection(ZoningsActivity.this)){
                     dialog.dismiss();
-                    LoadCompanies loadCompanies = new LoadCompanies();
+                    loadCompanies = new LoadCompanies();
                     loadCompanies.execute(zoning);
                 }
                 else Toast.makeText(ZoningsActivity.this, R.string.no_connection_error, Toast.LENGTH_SHORT).show();
@@ -209,6 +210,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
     protected void onDestroy() {
         super.onDestroy();
         if(loadZonings != null) loadZonings.cancel(true);
+        if(loadCompanies != null) loadCompanies.cancel(true);
     }
 
     public class LoadZonings extends AsyncTask<Void, Void, ArrayList<Zoning>> {
@@ -217,7 +219,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             ArrayList<Zoning> zonings = new ArrayList<>();
             ZoningDAO zoningDAO = new ZoningDAO();
             if(isCancelled()){
-                Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);
@@ -266,7 +268,7 @@ public class ZoningsActivity extends AppCompatActivity implements Serializable {
             ArrayList<Company> companies = new ArrayList<>();
             CompanyDAO companyDAO = new CompanyDAO();
             if(isCancelled()){
-                Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ZoningsActivity.this, getString(R.string.task_cancelled), Toast.LENGTH_SHORT).show();
             }
             try {
                 String token = PreferenceManager.getDefaultSharedPreferences(ZoningsActivity.this).getString("Token",null);

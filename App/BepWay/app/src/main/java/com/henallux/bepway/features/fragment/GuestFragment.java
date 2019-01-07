@@ -27,6 +27,7 @@ public class GuestFragment extends Fragment {
     private final String LOGIN_GUEST = "guest";
     private final String PASSWORD_GUEST = "guest";
     private final LoginModel GUEST_ACCOUNT = new LoginModel(LOGIN_GUEST, PASSWORD_GUEST);
+    private GetToken tokenTask;
 
 
     @Nullable
@@ -40,8 +41,8 @@ public class GuestFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(CheckConnection.isWifiConnected(getActivity().getApplicationContext()) || CheckConnection.is3GConnected(getActivity().getApplicationContext())){
-                    GetToken getToken = new GetToken();
-                    getToken.execute(GUEST_ACCOUNT);
+                    tokenTask = new GetToken();
+                    tokenTask.execute(GUEST_ACCOUNT);
                 }
                 else{
                     Toast.makeText(getActivity(), getString(R.string.no_connection_error), Toast.LENGTH_SHORT).show();
@@ -100,4 +101,9 @@ public class GuestFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        if(tokenTask != null) tokenTask.cancel(true);
+        super.onDestroy();
+    }
 }
